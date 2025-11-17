@@ -272,6 +272,7 @@ class ChatMethodKeys {
   static const String removeGroupSharedFile = "removeGroupSharedFile";
   static const String updateGroupAnnouncement = "updateGroupAnnouncement";
   static const String updateGroupExt = "updateGroupExt";
+  static const String updateGroupAvatar = "updateGroupAvatar";
   static const String joinPublicGroup = "joinPublicGroup";
   static const String requestToJoinPublicGroup = "requestToJoinPublicGroup";
   static const String acceptJoinApplication = "acceptJoinApplication";

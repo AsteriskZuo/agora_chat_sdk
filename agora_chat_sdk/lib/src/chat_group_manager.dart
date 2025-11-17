@@ -1614,6 +1614,50 @@ class ChatGroupManager {
   }
 
   /// ~english
+  /// Changes the group avatar.
+  ///
+  /// Only the group owner can call this method.
+  ///
+  /// Param [groupId] The group ID.
+  ///
+  /// Param [avatarUrl] The new avatar URL.
+  ///
+  /// **Return** The updated group instance.
+  ///
+  /// **Throws** A description of the exception. See [ChatError].
+  /// ~end
+  ///
+  /// ~chinese
+  /// 更改群组头像。
+  ///
+  /// 该方法只有群主才有权限调用。
+  ///
+  /// Param [groupId] 群组 ID。
+  ///
+  /// Param [avatarUrl] 新头像 URL。
+  ///
+  /// **Return** 更新后的群组对象。
+  ///
+  /// **Throws**  如果有异常会在此抛出，包括错误码和错误信息，详见 [ChatError]。
+  /// ~end
+  Future<ChatGroup> updateGroupAvatarUrl({
+    required String groupId,
+    required String avatarUrl,
+  }) async {
+    Map req = {'groupId': groupId, 'avatarUrl': avatarUrl};
+    Map result = await _channel.invokeMethod(
+      ChatMethodKeys.updateGroupAvatar,
+      req,
+    );
+    try {
+      ChatError.hasErrorFromResult(result);
+      return ChatGroup.fromJson(result[ChatMethodKeys.updateGroupAvatar]);
+    } on ChatError catch (e) {
+      throw e;
+    }
+  }
+
+  /// ~english
   /// Joins a public group.
   ///
   /// For a group that requires no authentication，users can join it freely without obtaining permissions from the group owner.

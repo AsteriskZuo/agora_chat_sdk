@@ -256,6 +256,7 @@ static NSString *const ChatDownloadGroupSharedFile = @"downloadGroupSharedFile";
 static NSString *const ChatRemoveGroupSharedFile = @"removeGroupSharedFile";
 static NSString *const ChatUpdateGroupAnnouncement = @"updateGroupAnnouncement";
 static NSString *const ChatUpdateGroupExt = @"updateGroupExt";
+static NSString *const ChatUpdateGroupAvatar = @"updateGroupAvatar";
 static NSString *const ChatJoinPublicGroup = @"joinPublicGroup";
 static NSString *const ChatRequestToJoinPublicGroup = @"requestToJoinPublicGroup";
 static NSString *const ChatAcceptJoinApplication = @"acceptJoinApplication";

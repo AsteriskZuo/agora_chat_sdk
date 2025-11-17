@@ -266,6 +266,12 @@
                  channelName:call.method
                       result:result];
     }
+    else if([ChatUpdateGroupAvatar isEqualToString:call.method])
+    {
+        [self updateGroupAvatar:call.arguments
+                    channelName:call.method
+                         result:result];
+    }
     else if([ChatJoinPublicGroup isEqualToString:call.method])
     {
         [self joinPublicGroup:call.arguments
@@ -856,6 +862,20 @@
                       channelName:aChannelName
                             error:aError
                            object:[aGroup toJson]];
+    }];
+}
+
+- (void)updateGroupAvatar:(NSDictionary *)param channelName:(NSString *)aChannelName result:(FlutterResult)result {
+    __weak typeof(self) weakSelf = self;
+    NSString *groupId = param[@"groupId"];
+    NSString *avatarUrl = param[@"avatarUrl"];
+    [EMClient.sharedClient.groupManager updateGroupAvatar:avatarUrl
+                                                  groupId:groupId
+                                               completion:^(EMGroup * _Nullable group, EMError * _Nullable error) {
+        [weakSelf wrapperCallBack:result
+                      channelName:aChannelName
+                            error:error
+                           object:[group toJson]];
     }];
 }
 

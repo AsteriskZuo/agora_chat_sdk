@@ -235,6 +235,7 @@ public class EMSDKMethod {
     static final String removeGroupSharedFile = "removeGroupSharedFile";
     static final String updateGroupAnnouncement = "updateGroupAnnouncement";
     static final String updateGroupExt = "updateGroupExt";
+    static final String updateGroupAvatar = "updateGroupAvatar";
     static final String joinPublicGroup = "joinPublicGroup";
     static final String requestToJoinPublicGroup = "requestToJoinPublicGroup";
     static final String acceptJoinApplication = "acceptJoinApplication";

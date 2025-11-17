@@ -120,6 +120,8 @@ public class EMGroupManagerWrapper extends EMWrapper implements MethodCallHandle
                 updateGroupAnnouncement(param, call.method, result);
             } else if (EMSDKMethod.updateGroupExt.equals(call.method)) {
                 updateGroupExt(param, call.method, result);
+            } else if (EMSDKMethod.updateGroupAvatar.equals(call.method)) {
+                updateGroupAvatar(param, call.method, result);
             } else if (EMSDKMethod.joinPublicGroup.equals(call.method)) {
                 joinPublicGroup(param, call.method, result);
             } else if (EMSDKMethod.requestToJoinPublicGroup.equals(call.method)) {
@@ -755,6 +757,18 @@ public class EMGroupManagerWrapper extends EMWrapper implements MethodCallHandle
                 onSuccess(result, channelName, EMGroupHelper.toJson(group));
             } catch (HyphenateException e) {
                 onError(result, e);
+            }
+        });
+    }
+
+    private void updateGroupAvatar(JSONObject param, String channelName, Result result) throws JSONException {
+        String groupId = param.getString("groupId");
+        String avatarUrl = param.optString("avatarUrl");
+        EMClient.getInstance().groupManager().asyncChangeGroupAvatar(groupId, avatarUrl, new EMWrapperCallBack(result, channelName, null) {
+            @Override
+            public void onSuccess() {
+                EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
+                super.updateObject(EMGroupHelper.toJson(group));
             }
         });
     }
