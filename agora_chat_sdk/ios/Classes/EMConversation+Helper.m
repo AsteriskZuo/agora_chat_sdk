@@ -18,6 +18,15 @@
     ret[@"isPinned"] = @(self.isPinned);
     ret[@"pinnedTime"] = @(self.pinnedTime);
     ret[@"marks"] = self.marks;
+    if (self.name) {
+        ret[@"name"] = self.name;
+    }
+    if (self.avatar) {
+        ret[@"avatar"] = self.avatar;
+    }
+    if (self.owner) {
+        ret[@"owner"] = self.owner;
+    }
     return ret;
 }
 

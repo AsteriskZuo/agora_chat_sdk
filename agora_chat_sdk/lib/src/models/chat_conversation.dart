@@ -33,6 +33,9 @@ class ChatConversation {
     this.isPinned,
     this.pinnedTime,
     this.marks,
+    this.name,
+    this.avatar,
+    this.owner,
   );
 
   factory ChatConversation.fromJson(Map<String, dynamic> map) {
@@ -56,6 +59,9 @@ class ChatConversation {
           return marks;
         },
       ),
+      map["name"] as String?,
+      map["avatar"] as String?,
+      map["owner"] as String?,
     );
 
     return ret;
@@ -144,6 +150,33 @@ class ChatConversation {
   /// 会话标记。
   /// ~end
   final List<ConversationMarkType>? marks;
+
+  /// ~english
+  /// The group name, only available for group chat.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 群组名称, 仅用于群会话。
+  /// ~end
+  final String? name;
+
+  /// ~english
+  /// The group avatar, only available for group chat.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 群组头像, 仅用于群会话。
+  /// ~end
+  final String? avatar;
+
+  /// ~english
+  /// The group owner, only available for group chat.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 群组所有者, 仅用于群会话。
+  /// ~end
+  final String? owner;
 
   Map<String, String>? _ext;
 

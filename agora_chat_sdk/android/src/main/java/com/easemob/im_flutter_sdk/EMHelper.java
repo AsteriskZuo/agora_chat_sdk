@@ -1114,6 +1114,9 @@ class EMConversationHelper {
             }
             data.put("marks", ja);
         }
+        EMCommonUtil.putObjectToMap(data, "name", conversation.getName());
+        EMCommonUtil.putObjectToMap(data, "avatar", conversation.getAvatar());
+        EMCommonUtil.putObjectToMap(data, "owner", conversation.getOwner());
         try {
             data.put("ext", jsonStringToMap(conversation.getExtField()));
         } catch (JSONException e) {
