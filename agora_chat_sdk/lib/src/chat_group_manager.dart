@@ -281,6 +281,8 @@ class ChatGroupManager {
   ///
   /// Param [groupName] The group name.
   ///
+  /// Param [avatarUrl] The group avatar URL.
+  ///
   /// Param [desc] The group description.
   ///
   /// Param [inviteMembers] The group member array. The group owner ID is optional.
@@ -307,6 +309,8 @@ class ChatGroupManager {
   ///
   /// Param [groupName] 群组名称。
   ///
+  /// Param [avatarUrl] 群组头像 URL。
+  ///
   /// Param [desc] 群组描述。
   ///
   /// Param [inviteMembers] 群成员数组。群主 ID 可选。
@@ -326,6 +330,7 @@ class ChatGroupManager {
   /// ~end
   Future<ChatGroup> createGroup({
     String? groupName,
+    String? avatarUrl,
     String? desc,
     List<String>? inviteMembers,
     String? inviteReason,
@@ -333,6 +338,7 @@ class ChatGroupManager {
   }) async {
     Map req = {'options': options.toJson()};
     req.putIfNotNull("groupName", groupName);
+    req.putIfNotNull("avatarUrl", avatarUrl);
     req.putIfNotNull("desc", desc);
     req.putIfNotNull("inviteMembers", inviteMembers);
     req.putIfNotNull("inviteReason", inviteReason);

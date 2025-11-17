@@ -240,6 +240,11 @@ public class EMGroupManagerWrapper extends EMWrapper implements MethodCallHandle
             groupName = param.getString("groupName");
         }
 
+        String avatarUrl = null;
+        if(param.has("avatarUrl")) {
+            avatarUrl = param.getString("avatarUrl");
+        }
+
         String desc = null;
         if(param.has("desc")){
             desc = param.getString("desc");
@@ -271,7 +276,7 @@ public class EMGroupManagerWrapper extends EMWrapper implements MethodCallHandle
             }
         };
 
-        EMClient.getInstance().groupManager().asyncCreateGroup(groupName, desc, members, inviteReason, options,
+        EMClient.getInstance().groupManager().asyncCreateGroup(groupName, avatarUrl, desc, members, inviteReason, options,
                 callBack);
     }
 
