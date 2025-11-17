@@ -14,6 +14,7 @@ class ChatGroup {
   ChatGroup._private({
     required this.groupId,
     this.name,
+    this.avatarUrl,
     this.description,
     this.owner,
     this.announcement,
@@ -57,6 +58,15 @@ class ChatGroup {
   /// **Return** 群组名称。
   /// ~end
   final String? name;
+
+  /// ~english
+  /// Gets the group avatar.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 从内存中获取群组头像。
+  /// ~end
+  final String? avatarUrl;
 
   /// ~english
   /// Gets the group description.
@@ -348,6 +358,7 @@ class ChatGroup {
   factory ChatGroup.fromJson(Map map) {
     String groupId = map['groupId'];
     String? name = map["name"];
+    String? avatarUrl = map["avatarUrl"];
     String? description = map["desc"];
     String? owner = map["owner"];
     String? announcement = map["announcement"];
@@ -370,6 +381,7 @@ class ChatGroup {
     return ChatGroup._private(
       groupId: groupId,
       name: name,
+      avatarUrl: avatarUrl,
       description: description,
       owner: owner,
       announcement: announcement,
@@ -393,6 +405,7 @@ class ChatGroup {
     Map data = Map();
     data.putIfNotNull("groupId", groupId);
     data.putIfNotNull("name", name);
+    data.putIfNotNull("avatarUrl", avatarUrl);
     data.putIfNotNull("desc", description);
     data.putIfNotNull("owner", owner);
     data.putIfNotNull("announcement", announcement);

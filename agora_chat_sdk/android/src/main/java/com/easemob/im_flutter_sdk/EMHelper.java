@@ -174,6 +174,7 @@ class EMGroupHelper {
         Map<String, Object> data = new HashMap<>();
         EMCommonUtil.putObjectToMap(data, "groupId", group.getGroupId());
         EMCommonUtil.putObjectToMap(data, "name", group.getGroupName());
+        EMCommonUtil.putObjectToMap(data, "avatarUrl", group.getGroupAvatar());
         EMCommonUtil.putObjectToMap(data, "desc", group.getDescription());
         EMCommonUtil.putObjectToMap(data, "owner", group.getOwner());
         EMCommonUtil.putObjectToMap(data, "announcement", group.getAnnouncement());

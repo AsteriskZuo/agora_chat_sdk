@@ -14,6 +14,7 @@
     NSMutableDictionary *ret = [NSMutableDictionary dictionary];
     ret[@"groupId"] = self.groupId;
     ret[@"name"] = self.groupName;
+    ret[@"avatarUrl"] = self.groupAvatar;
     ret[@"desc"] = self.description;
     ret[@"owner"] = self.owner;
     ret[@"announcement"] = self.announcement;
