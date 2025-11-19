@@ -86,6 +86,16 @@ class EMWrapperCallBack implements EMCallBack {
     public void onProgress(int progress, String status) {
         // no need
     }
+
+    public void updateObject(Object object) {
+        post(() -> {
+            Map<String, Object> data = new HashMap<>();
+            if (object != null) {
+                data.put(channelName, object);
+            }
+            result.success(data);
+        });
+    }
 }
 
 class EMDownloadCallback implements EMCallBack {

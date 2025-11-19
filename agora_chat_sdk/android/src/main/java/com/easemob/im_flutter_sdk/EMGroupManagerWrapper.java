@@ -768,7 +768,7 @@ public class EMGroupManagerWrapper extends EMWrapper implements MethodCallHandle
             @Override
             public void onSuccess() {
                 EMGroup group = EMClient.getInstance().groupManager().getGroup(groupId);
-                super.updateObject(EMGroupHelper.toJson(group));
+                updateObject(EMGroupHelper.toJson(group));
             }
         });
     }
