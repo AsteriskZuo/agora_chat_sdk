@@ -120,6 +120,10 @@ class ChatClient {
         _onTokenDidExpire(argMap);
       } else if (call.method == ChatMethodKeys.onAppActiveNumberReachLimit) {
         _onAppActiveNumberReachLimit(argMap);
+      } else if (call.method == ChatMethodKeys.onOfflineMessageSyncStart) {
+        _onOfflineMessageSyncStart(argMap);
+      } else if (call.method == ChatMethodKeys.onOfflineMessageSyncFinish) {
+        _onOfflineMessageSyncFinish(argMap);
       }
     });
   }
@@ -954,6 +958,18 @@ class ChatClient {
   void _onAppActiveNumberReachLimit(Map? map) {
     for (var item in _connectionEventHandler.values) {
       item.onAppActiveNumberReachLimit?.call();
+    }
+  }
+
+  void _onOfflineMessageSyncStart(Map? map) {
+    for (var item in _connectionEventHandler.values) {
+      item.onOfflineMessageSyncStart?.call();
+    }
+  }
+
+  void _onOfflineMessageSyncFinish(Map? map) {
+    for (var item in _connectionEventHandler.values) {
+      item.onOfflineMessageSyncFinish?.call();
     }
   }
 

@@ -149,6 +149,24 @@ class ConnectionEventHandler {
   final VoidCallback? onAppActiveNumberReachLimit;
 
   /// ~english
+  /// Occurs when the SDK starts pulling offline messages from the server.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 开始从服务器拉取离线消息时触发。
+  /// ~end
+  final VoidCallback? onOfflineMessageSyncStart;
+
+  /// ~english
+  /// Occurs when the SDK finishes pulling offline messages from the server.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 从服务器拉取离线消息结束时触发。
+  /// ~end
+  final VoidCallback? onOfflineMessageSyncFinish;
+
+  /// ~english
   /// The chat connection listener callback.
   ///
   /// Param [onConnected] The SDK connects to the chat server successfully.
@@ -203,6 +221,10 @@ class ConnectionEventHandler {
   /// Param [onTokenDidExpire] Agora token 已过期时回调。
   ///
   /// Param [onAppActiveNumberReachLimit] 应用程序的日活跃用户数量（DAU）或月活跃用户数量（MAU）达到上限时回调。
+  ///
+  /// Param [onOfflineMessageSyncStart] The SDK starts pulling offline messages from the server.
+  ///
+  /// Param [onOfflineMessageSyncFinish] The SDK finishes pulling offline messages from the server.
   /// ~end
   ConnectionEventHandler({
     this.onConnected,
@@ -217,6 +239,8 @@ class ConnectionEventHandler {
     this.onTokenWillExpire,
     this.onTokenDidExpire,
     this.onAppActiveNumberReachLimit,
+    this.onOfflineMessageSyncStart,
+    this.onOfflineMessageSyncFinish,
   });
 }
 

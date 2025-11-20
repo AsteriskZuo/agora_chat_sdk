@@ -517,6 +517,16 @@ public class EMClientWrapper extends EMWrapper implements MethodCallHandler {
             }
 
             @Override
+            public void onOfflineMessageSyncStart() {
+                post(()-> channel.invokeMethod(EMSDKMethod.onOfflineMessageSyncStart, null));
+            }
+
+            @Override
+            public void onOfflineMessageSyncFinish() {
+                post(()-> channel.invokeMethod(EMSDKMethod.onOfflineMessageSyncFinish, null));
+            }
+
+            @Override
             public void onLogout(int errorCode, String info) {
                 if (errorCode == 206) {
                     EMListenerHandle.getInstance().clearHandle();

@@ -39,6 +39,8 @@ public class EMSDKMethod {
     static final String onSendDataToFlutter = "onSendDataToFlutter";
     static final String onTokenWillExpire = "onTokenWillExpire";
     static final String onTokenDidExpire = "onTokenDidExpire";
+    static final String onOfflineMessageSyncStart = "onOfflineMessageSyncStart";
+    static final String onOfflineMessageSyncFinish = "onOfflineMessageSyncFinish";
 
     /// EMContactManager methods
     static final String addContact = "addContact";

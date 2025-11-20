@@ -45,6 +45,8 @@ class ChatMethodKeys {
   static const String onTokenDidExpire = "onTokenDidExpire";
   static const String onAppActiveNumberReachLimit =
       'onAppActiveNumberReachLimit';
+  static const String onOfflineMessageSyncStart = 'onOfflineMessageSyncStart';
+  static const String onOfflineMessageSyncFinish = 'onOfflineMessageSyncFinish';
 
   /// ChatContactManager methods
   static const String addContact = "addContact";

@@ -48,6 +48,8 @@ static NSString *const ChatSendDataToFlutter = @"onSendDataToFlutter";
 static NSString *const ChatOnTokenWillExpire = @"onTokenWillExpire";
 static NSString *const ChatOnTokenDidExpire = @"onTokenDidExpire";
 static NSString *const ChatOnAppActiveNumberReachLimit = @"onAppActiveNumberReachLimit";
+static NSString *const ChatOnOfflineMessageSyncStart = @"onOfflineMessageSyncStart";
+static NSString *const ChatOnOfflineMessageSyncFinish = @"onOfflineMessageSyncFinish";
 
 #pragma mark - EMContactManagerWrapper
 static NSString *const ChatAddContact = @"addContact";

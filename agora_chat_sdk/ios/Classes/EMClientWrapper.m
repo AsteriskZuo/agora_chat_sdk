@@ -527,6 +527,18 @@
                      arguments:nil];
 }
 
+// SDK开始从服务器拉取离线消息
+- (void)onOfflineMessageSyncStart {
+    [self.channel invokeMethod:ChatOnOfflineMessageSyncStart
+                     arguments:nil];
+}
+
+// SDK从服务器拉取离线消息结束
+- (void)onOfflineMessageSyncFinish {
+    [self.channel invokeMethod:ChatOnOfflineMessageSyncFinish
+                     arguments:nil];
+}
+
 - (void)userAccountDidLoginFromOtherDevice:(NSString *)aDeviceName {
     [EMListenerHandle.sharedInstance clearHandle];
     [self.channel invokeMethod:ChatOnUserDidLoginFromOtherDevice
