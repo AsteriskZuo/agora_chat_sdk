@@ -1,4 +1,18 @@
 
+## v1.3.4-beta.1
+
+### New features
+
+- Added the `name`, `avatarUrl`, and `owner` properties in the `ChatConversation` class.
+- Added the `avatarUrl` parameter for the `ChatGroupManager.createGroup` method.
+- Added the `ChatGroupManager.updateGroupAvatarUrl` method.
+- Added the `avatarUrl` property for the `ChatGroup` class.
+
+### Issues fixed
+
+- Fixed the `ChatConversation.unreadCount` error when the app is reinstalled.
+- Fixed an issue where the message status remains pending when the application restarts after being crashed or killed.
+
 ## v1.3.3
 
 ### New features
