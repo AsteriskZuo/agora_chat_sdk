@@ -522,7 +522,7 @@
 
 // 声网token过期
 - (void)tokenDidExpire:(EMErrorCode)aErrorCode {
-    [EMListenerHandle.sharedInstance clearHandle];
+    //[EMListenerHandle.sharedInstance clearHandle];
     [self.channel invokeMethod:ChatOnTokenDidExpire
                      arguments:nil];
 }
