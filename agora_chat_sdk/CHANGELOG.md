@@ -1,3 +1,9 @@
+## v1.3.5-beta.1
+
+### New features
+
+- Upgrades the native platforms `iOS` and `Android` that the Flutter platform depends on to v4.10.3.3.
+- Added the `localTrust` in `ChatOptions` class.
 
 ## v1.3.4-beta.1
 
