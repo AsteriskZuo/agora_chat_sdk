@@ -40,6 +40,7 @@
     data[@"enableTLS"] = @(self.enableTLSConnection);
     data[@"messagesReceiveCallbackIncludeSend"] = @(self.includeSendMessageInMessageListener);
     data[@"regardImportMessagesAsRead"] = @(self.regardImportMessagesAsRead);
+    data[@"localTrust"] = @(self.localTrust);
     return data;
 }
 + (EMOptions *)fromJson:(NSDictionary *)aJson {
@@ -71,6 +72,7 @@
     options.useReplacedMessageContents = [aJson[@"useReplacedMessageContents"] boolValue];
     options.includeSendMessageInMessageListener = [aJson[@"messagesReceiveCallbackIncludeSend"] boolValue];
     options.regardImportMessagesAsRead = [aJson[@"regardImportMessagesAsRead"] boolValue];
+    options.localTrust = [aJson[@"localTrust"] boolValue];
     if(aJson[@"osType"]) {
         options.customOSType = [aJson[@"osType"] intValue];
     }

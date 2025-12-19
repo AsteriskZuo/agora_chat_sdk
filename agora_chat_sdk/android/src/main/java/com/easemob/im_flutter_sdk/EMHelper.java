@@ -134,6 +134,7 @@ class EMOptionsHelper {
         options.setUseReplacedMessageContents(json.optBoolean("useReplacedMessageContents", false));
         options.setIncludeSendMessageInMessageListener(json.optBoolean("messagesReceiveCallbackIncludeSend", false));
         options.setRegardImportedMsgAsRead(json.optBoolean("regardImportMessagesAsRead", false));
+        options.setLocalTrust(json.optBoolean("localTrust", false));
         return options;
 
     }

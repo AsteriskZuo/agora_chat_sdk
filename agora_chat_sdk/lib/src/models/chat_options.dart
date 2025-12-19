@@ -288,6 +288,21 @@ class ChatOptions {
   final bool regardImportMessagesAsRead;
 
   /// ~english
+  /// Whether to enable the local trust mode. When enabled, the login status is not verified when loading local cached data.
+  ///
+  /// - `true`: Enable the local trust mode.
+  /// - `false`: (Default) Disable the local trust mode.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 是否开启本地信任模式。开启后，加载本地缓存数据时，不校验登录状态。
+  ///
+  /// - `true`：开启本地信任模式。
+  /// - （默认）`false`：关闭本地信任模式。
+  /// ~end
+  final bool localTrust;
+
+  /// ~english
   /// The area code.
   /// This attribute is used to restrict the scope of accessible edge nodes. The default value is `AreaCodeGLOB`.
   /// This attribute can be set only when you call [ChatClient.init]. The attribute setting cannot be changed during the app runtime.
@@ -527,6 +542,8 @@ class ChatOptions {
   ///
   /// Param [regardImportMessagesAsRead] Whether to regard import messages as read, default is false.
   ///
+  /// Param [localTrust] Whether to enable the local trust mode, default is false.
+  ///
   /// ~end
   ///
   /// ~chinese
@@ -613,6 +630,8 @@ class ChatOptions {
   ///
   /// Param [regardImportMessagesAsRead] 是否将导入的消息视为已读, 默认为 false。
   ///
+  /// Param [localTrust] 是否开启本地信任模式, 默认为 false。
+  ///
   /// ~end
   ChatOptions({
     required this.appKey,
@@ -642,6 +661,7 @@ class ChatOptions {
     this.enableTLS = false,
     this.messagesReceiveCallbackIncludeSend = false,
     this.regardImportMessagesAsRead = false,
+    this.localTrust = false,
   });
 
   Map toJson() {
@@ -681,6 +701,7 @@ class ChatOptions {
       messagesReceiveCallbackIncludeSend,
     );
     data.putIfNotNull('regardImportMessagesAsRead', regardImportMessagesAsRead);
+    data.putIfNotNull('localTrust', localTrust);
 
     data["usingHttpsOnly"] = this.usingHttpsOnly;
     data["pushConfig"] = this._pushConfig.toJson();
