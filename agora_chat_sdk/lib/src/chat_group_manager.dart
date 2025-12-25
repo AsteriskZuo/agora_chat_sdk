@@ -2263,10 +2263,20 @@ class ChatGroupManager {
           String member = map['member'];
           element.onMemberJoinedFromGroup?.call(groupId, member);
           break;
+        case ChatGroupChangeEvent.ON_MEMBERS_JOINED:
+          String groupId = map['groupId'];
+          List<String> members = List<String>.from(map['members'] ?? []);
+          element.onMembersJoinedFromGroup?.call(groupId, members);
+          break;
         case ChatGroupChangeEvent.ON_MEMBER_EXITED:
           String groupId = map['groupId'];
           String member = map['member'];
           element.onMemberExitedFromGroup?.call(groupId, member);
+          break;
+        case ChatGroupChangeEvent.ON_MEMBERS_EXITED:
+          String groupId = map['groupId'];
+          List<String> members = List<String>.from(map['members'] ?? []);
+          element.onMembersExitedFromGroup?.call(groupId, members);
           break;
         case ChatGroupChangeEvent.ON_ANNOUNCEMENT_CHANGED:
           String groupId = map['groupId'];

@@ -46,6 +46,8 @@ class ChatGroupChangeEvent {
   static const String ON_OWNER_CHANGED = "onGroupOwnerChanged";
   static const String ON_MEMBER_JOINED = "onGroupMemberJoined";
   static const String ON_MEMBER_EXITED = "onGroupMemberExited";
+  static const String ON_MEMBERS_JOINED = "onGroupMembersJoined";
+  static const String ON_MEMBERS_EXITED = "onGroupMembersExited";
   static const String ON_ANNOUNCEMENT_CHANGED = "onGroupAnnouncementChanged";
   static const String ON_SHARED_FILE_ADDED = "onGroupSharedFileAdded";
   static const String ON_SHARED_FILE__DELETED = "onGroupSharedFileDeleted";

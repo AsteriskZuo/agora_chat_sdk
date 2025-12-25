@@ -1373,6 +1373,36 @@
     }];
 }
 
+- (void)userDidJoinGroup:(EMGroup *)aGroup
+                   users:(NSArray<NSString *> *)userIds {
+
+    __weak typeof(self) weakSelf = self;
+    [EMListenerHandle.sharedInstance addHandle:^{
+        NSDictionary *map = @{
+            @"type":@"onGroupMembersJoined",
+            @"groupId":aGroup.groupId,
+            @"members":userIds
+        };
+        [weakSelf.channel invokeMethod:ChatOnGroupChanged
+                         arguments:map];
+    }];
+}
+
+- (void)userDidLeaveGroup:(EMGroup *)aGroup
+                    users:(NSArray<NSString *> *)userIds {
+
+    __weak typeof(self) weakSelf = self;
+    [EMListenerHandle.sharedInstance addHandle:^{
+        NSDictionary *map = @{
+            @"type":@"onGroupMembersExited",
+            @"groupId":aGroup.groupId,
+            @"members":userIds
+        };
+        [weakSelf.channel invokeMethod:ChatOnGroupChanged
+                         arguments:map];
+    }];
+}
+
 - (void)groupAnnouncementDidUpdate:(EMGroup *)aGroup
                       announcement:(NSString *)aAnnouncement {
 

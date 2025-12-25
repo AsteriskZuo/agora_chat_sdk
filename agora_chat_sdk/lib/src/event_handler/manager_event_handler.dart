@@ -1276,6 +1276,7 @@ class ChatGroupEventHandler {
   /// ~chinese
   /// 群组成员主动退出回调。
   /// ~end
+  @Deprecated('Use onMembersExitedFromGroup instead')
   final void Function(String groupId, String member)? onMemberExitedFromGroup;
 
   /// ~english
@@ -1285,7 +1286,26 @@ class ChatGroupEventHandler {
   /// ~chinese
   /// 新成员加入群组的回调。
   /// ~end
+  @Deprecated('Use onMembersJoinedFromGroup instead')
   final void Function(String groupId, String member)? onMemberJoinedFromGroup;
+
+  /// ~english
+  /// Occurs when members proactively leave the group.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 群组成员批量主动退出回调。
+  /// ~end
+  final void Function(String groupId, List<String> members)? onMembersExitedFromGroup;
+
+  /// ~english
+  /// Occurs when users join a group.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 新成员批量加入群组的回调。
+  /// ~end
+  final void Function(String groupId, List<String> members)? onMembersJoinedFromGroup;
 
   /// ~english
   /// Occurs when one or more group members are muted.
@@ -1564,6 +1584,8 @@ class ChatGroupEventHandler {
     this.onInvitationReceivedFromGroup,
     this.onMemberExitedFromGroup,
     this.onMemberJoinedFromGroup,
+    this.onMembersExitedFromGroup,
+    this.onMembersJoinedFromGroup,
     this.onMuteListAddedFromGroup,
     this.onMuteListRemovedFromGroup,
     this.onOwnerChangedFromGroup,
