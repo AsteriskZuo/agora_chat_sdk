@@ -42,6 +42,7 @@ import com.hyphenate.chat.EMPushManager;
 import com.hyphenate.chat.EMSilentModeParam;
 import com.hyphenate.chat.EMSilentModeResult;
 import com.hyphenate.chat.EMSilentModeTime;
+import com.hyphenate.chat.EMStreamChunk;
 import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.chat.EMVideoMessageBody;
 import com.hyphenate.chat.EMVoiceMessageBody;

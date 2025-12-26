@@ -1224,12 +1224,12 @@ public class EMGroupManagerWrapper extends EMWrapper implements MethodCallHandle
             }
 
             @Override
-            public void onMembersJoined(EMAGroup group, List<String> members) {
+            public void onMembersJoined(String groupId, List<String> members) {
                 EMListenerHandle.getInstance().addHandle(
                         ()-> {
                             Map<String, Object> data = new HashMap<>();
                             data.put("type", "onGroupMembersJoined");
-                            data.put("groupId", group.getGroupId());
+                            data.put("groupId", groupId);
                             data.put("members", members);
                             post(() -> channel.invokeMethod(EMSDKMethod.onGroupChanged, data));
                         }
@@ -1237,12 +1237,12 @@ public class EMGroupManagerWrapper extends EMWrapper implements MethodCallHandle
             }
 
             @Override
-            public void onMembersExited(EMAGroup group, List<String> members) {
+            public void onMembersExited(String groupId, List<String> members) {
                 EMListenerHandle.getInstance().addHandle(
                         ()-> {
                             Map<String, Object> data = new HashMap<>();
                             data.put("type", "onGroupMembersExited");
-                            data.put("groupId", group.getGroupId());
+                            data.put("groupId", groupId);
                             data.put("members", members);
                             post(() -> channel.invokeMethod(EMSDKMethod.onGroupChanged, data));
                         }
