@@ -1384,7 +1384,7 @@
                      arguments:msgList];
 }
 
-- (void)onStreamMessagesReceive:(NSArray *)aMessages {
+- (void)onStreamMessagesReceived:(NSArray *)aMessages {
     NSMutableArray *msgList = [NSMutableArray array];
     for (EMChatMessage *msg in aMessages) {
 
