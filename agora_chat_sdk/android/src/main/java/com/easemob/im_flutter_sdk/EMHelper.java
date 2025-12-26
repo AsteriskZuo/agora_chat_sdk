@@ -622,7 +622,41 @@ class EMMessageHelper {
         // 通过EMMessageWrapper获取
         // data.put("groupAckCount", message.groupAckCount());
         data.put("isThread", message.isChatThreadMessage());
+
+        // 添加 streamChunk 处理
+        EMStreamChunk streamChunk = message.getStreamChunk();
+        if (streamChunk != null) {
+            Map<String, Object> streamChunkData = new HashMap<>();
+            streamChunkData.put("status", streamStatusToInt(streamChunk.getStatus()));
+            streamChunkData.put("errorCode", streamChunk.getErrorCode());
+            streamChunkData.put("finishReason", streamChunk.getFinishReason());
+            streamChunkData.put("text", streamChunk.getText() != null ? streamChunk.getText() : "");
+            String customType = streamChunk.getCustomType();
+            if (customType != null && !customType.isEmpty()) {
+                streamChunkData.put("customType", customType);
+            }
+            streamChunkData.put("sequenceNumber", streamChunk.getSequenceNumber());
+            data.put("streamChunk", streamChunkData);
+        }
+
         return data;
+    }
+
+    private static int streamStatusToInt(EMMessage.EMStreamStatus status) {
+        switch (status) {
+            case START:
+                return 0;
+            case START_AND_COMPLETE:
+                return 1;
+            case PROGRESS:
+                return 2;
+            case COMPLETE:
+                return 3;
+            case ERROR:
+                return 4;
+            default:
+                return 3;
+        }
     }
 
     private static EMMessage.ChatType chatTypeFromInt(int type) {
