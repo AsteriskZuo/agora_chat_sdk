@@ -97,6 +97,21 @@
     ret[@"broadcast"] = @(self.broadcast);
     ret[@"isContentReplaced"] = @(self.isContentReplaced);
     ret[@"pinnedInfo"] = [self.pinnedInfo toJson];
+
+    // 添加 streamChunk 处理
+    if (self.streamChunk) {
+        NSMutableDictionary *streamChunkDict = [NSMutableDictionary dictionary];
+        streamChunkDict[@"status"] = @(self.streamChunk.status);
+        streamChunkDict[@"errorCode"] = @(self.streamChunk.errorCode);
+        streamChunkDict[@"finishReason"] = @(self.streamChunk.finishReason);
+        streamChunkDict[@"text"] = self.streamChunk.text ?: @"";
+        if (self.streamChunk.customType) {
+            streamChunkDict[@"customType"] = self.streamChunk.customType;
+        }
+        streamChunkDict[@"sequenceNumber"] = @(self.streamChunk.sequenceNumber);
+        ret[@"streamChunk"] = streamChunkDict;
+    }
+
     return ret;
 }
 
