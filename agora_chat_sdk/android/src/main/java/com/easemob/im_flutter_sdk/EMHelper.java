@@ -636,7 +636,6 @@ class EMMessageHelper {
             if (customType != null && !customType.isEmpty()) {
                 streamChunkData.put("customType", customType);
             }
-            streamChunkData.put("sequenceNumber", streamChunk.getSequenceNumber());
             data.put("streamChunk", streamChunkData);
         }
 

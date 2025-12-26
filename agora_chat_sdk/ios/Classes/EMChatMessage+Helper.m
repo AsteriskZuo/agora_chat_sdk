@@ -108,7 +108,6 @@
         if (self.streamChunk.customType) {
             streamChunkDict[@"customType"] = self.streamChunk.customType;
         }
-        streamChunkDict[@"sequenceNumber"] = @(self.streamChunk.sequenceNumber);
         ret[@"streamChunk"] = streamChunkDict;
     }
 

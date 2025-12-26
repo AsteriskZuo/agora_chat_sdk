@@ -105,22 +105,12 @@ class StreamChunk {
   /// ~end
   final String? customType;
 
-  /// ~english
-  /// The sequence number.
-  /// ~end
-  ///
-  /// ~chinese
-  /// 序列号。
-  /// ~end
-  final int sequenceNumber;
-
   StreamChunk._private({
     required this.status,
     required this.errorCode,
     required this.finishReason,
     required this.chunk,
     this.customType,
-    required this.sequenceNumber,
   });
 
   /// ~english
@@ -145,7 +135,6 @@ class StreamChunk {
       finishReason: map['finishReason'] ?? 0,
       chunk: map['text'] ?? '',
       customType: map['customType'] ?? '',
-      sequenceNumber: map['sequenceNumber'] ?? 0,
     );
   }
 
