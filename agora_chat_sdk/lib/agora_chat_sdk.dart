@@ -36,6 +36,7 @@ export 'src/models/reaction_operation.dart';
 export 'src/models/message_pin_info.dart';
 
 export 'src/models/chat_message.dart';
+export 'src/models/chat_message_streamchunk.dart';
 export 'src/models/chat_download_callback.dart';
 export 'src/models/chat_message_reaction.dart';
 export 'src/models/chat_thread.dart';

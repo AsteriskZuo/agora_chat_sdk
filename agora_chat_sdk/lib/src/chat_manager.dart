@@ -36,6 +36,8 @@ class ChatManager {
     ChatChannel.setMethodCallHandler((MethodCall call) async {
       if (call.method == ChatMethodKeys.onMessagesReceived) {
         return _onMessagesReceived(call.arguments);
+      } else if (call.method == ChatMethodKeys.onStreamMessagesReceived) {
+        return _onStreamMessagesReceived(call.arguments);
       } else if (call.method == ChatMethodKeys.onCmdMessagesReceived) {
         return _onCmdMessagesReceived(call.arguments);
       } else if (call.method == ChatMethodKeys.onMessagesRead) {
@@ -2207,6 +2209,17 @@ class ChatManager {
 
     for (var item in _eventHandlesMap.values) {
       item.onMessagesReceived?.call(messageList);
+    }
+  }
+
+  Future<void> _onStreamMessagesReceived(List messages) async {
+    List<ChatMessage> messageList = [];
+    for (var message in messages) {
+      messageList.add(ChatMessage.fromJson(message));
+    }
+
+    for (var item in _eventHandlesMap.values) {
+      item.onStreamMessagesReceived?.call(messageList);
     }
   }
 

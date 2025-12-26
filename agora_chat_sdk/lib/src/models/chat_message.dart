@@ -276,6 +276,15 @@ class ChatMessage {
   /// ~end
   bool isContentReplaced = false;
 
+  /// ~english
+  /// The stream chunk of the message. Only valid for stream messages.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 消息的流式消息块。仅对流式消息有效。
+  /// ~end
+  StreamChunk? streamChunk;
+
   ChatRoomMessagePriority? _priority;
 
   Future<MessagePinInfo?> pinInfo() async {
@@ -968,7 +977,10 @@ class ChatMessage {
       ..status = messageStatusFromInt(map["status"])
       ..receiverList = map["receiverList"]?.cast<String>()
       ..isBroadcast = map["broadcast"] ?? false
-      ..isContentReplaced = map["isContentReplaced"] ?? false;
+      ..isContentReplaced = map["isContentReplaced"] ?? false
+      ..streamChunk = map["streamChunk"] != null
+          ? StreamChunk.fromJson(map["streamChunk"])
+          : null;
   }
 
   static ChatMessageBody? _bodyFromMap(Map map) {
