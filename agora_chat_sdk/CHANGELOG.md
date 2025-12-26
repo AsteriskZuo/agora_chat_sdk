@@ -1,3 +1,10 @@
+## v1.3.6-beta.1
+
+- Support stream message.
+- Add new callback API `onStreamMessagesReceived`.
+- Add the `StreamChunk` class.
+- Add new callback API `onMembersExitedFromGroup` and `onMembersJoinedFromGroup`.
+
 ## v1.3.5-beta.1
 
 ### New features
