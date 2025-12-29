@@ -25,7 +25,7 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.chat.EMDeviceInfo;
 import com.hyphenate.exceptions.HyphenateException;
-
+import com.hyphenate.chat.EMLoginExtensionInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -468,6 +468,11 @@ public class EMClientWrapper extends EMWrapper implements MethodCallHandler {
 
             @Override
             public void onLogout(int errorCode) {
+
+            }
+
+            @Override
+            public void onLogout(int errorCode, EMLoginExtensionInfo info) {
 
             }
 
