@@ -1,3 +1,8 @@
+## v1.3.6-beta.2
+
+- Upgrades the native platforms `iOS` that the Flutter platform depends on to v4.10.3.6.
+- Upgrades the native platforms `Android` that the Flutter platform depends on to v4.10.3.5.
+
 ## v1.3.6-beta.1
 
 - Support stream message.
