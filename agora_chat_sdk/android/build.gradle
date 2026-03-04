@@ -38,6 +38,12 @@ android {
     defaultConfig {
         minSdkVersion 21
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['./libs/easemob-sdk-4.10.3.5/libs']
+        }
+    }
 }
 
 tasks.withType(JavaCompile){
@@ -46,5 +52,5 @@ tasks.withType(JavaCompile){
 
 dependencies {
     api 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'io.hyphenate:hyphenate-chat:4.10.3.5'
+    implementation 'io.hyphenate:hyphenate-chat:4.10.3.6'
 }
