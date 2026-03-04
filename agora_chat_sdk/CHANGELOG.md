@@ -1,3 +1,7 @@
+## v1.3.7-beta.1
+- Upgrades the native platforms `iOS` that the Flutter platform depends on to v4.10.3.7.
+- Upgrades the native platforms `Android` that the Flutter platform depends on to v4.10.3.6.
+
 ## v1.3.6-beta.2
 
 - Upgrades the native platforms `iOS` that the Flutter platform depends on to v4.10.3.6.
