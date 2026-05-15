@@ -1,616 +1,330 @@
-## 4.16.0
-- 安卓依赖 SDK 升级到 4.16.1；
-- iOS以来 SDK 升级到 4.16.2；
-- 新增 `loadMessagesWithIds` API；
-- 修复 `Thread` 子区会被加入到 `conversation` 列表中；
-- 修复 当修改文本和自定义消息之外的消息时，`EChatEventHandler#onMessageContentChanged` 回调中不返回修改的信息的问题；
-- 修复 拉取漫游消息时，设置为不保存消息 `FetchMessageOptions#needSave 设置为 false`，也会生成新的本地会话的问题；
-- 修复 群组或聊天室解散后，成员收到回调后，仍然会从服务器获取群组或聊天室详情的问题；
-- 修复 更新群组属性时影响群组头像问题；
-- 更新 `AOSL` 库版本为 1.3.0；
-- 支持私有部署时设置 `IPv6` 格式的 REST 地址；
+## 1.4.0
+
+### New features
+
+- Added the `loadMessagesWithIds` API.
+- Added the `getCurrentDeviceId` API.
+- Added the `loadConversationMessagesWithKeyword` API.
+- Added support for GIF image messages.
+- Added support for group avatars.
+- Added support for message attachment authorization. To use this feature, contact Agora business support to enable it. After it is enabled, message attachments must be downloaded through SDK APIs.
+- Added support for pulling roaming messages sent only by specified group members.
+- Added support for loading local conversation messages sent only by specified group members.
+- Added support for returning the time when a member joined a group when fetching group member information.
+- Added the `onMembersJoinedFromGroup` and `onMembersExitedFromGroup` callbacks. Marked `onMemberJoinedFromGroup` and `onMemberExitedFromGroup` deprecated.
+- Added the `ChatGroupManager#updateGroupName` and `ChatGroupManager#updateGroupDesc` methods. Marked `ChatGroupManager#changeGroupName` and `ChatGroupManager#changeGroupDescription` deprecated.
+- Added the `ChatMultiDevicesEvent.UnKnow` type to prevent parse failures when new multi-device events are added.
+- Added the `ExtSettings.kDisableIosEnterBackground` option to control iOS background behavior and usage. 
+- Added an exception when `updateMessage` is called for a message that does not exist.
+- Added the `ChatRoomManager.isMemberInChatRoomMuteList` API to check whether the current user is in the chat room mute list.
+- Added support for modifying various message types after sending through `ChatManager#modifyMessage`:
+  - Text and custom messages: The message body and `attributes` can be modified.
+  - File, video, audio, image, location, and combined forward messages: Only `attributes` can be modified.
+  - Command messages: Modification is not supported.
+- After a user joins a chat room, the success callback of `joinChatroom` now includes the following information:
+  1. The current chat room member count, `ChatRoom#memberCount`.
+  2. The chat room all-member mute status, `ChatRoom#isAllMemberMuted`.
+  3. The chat room creation timestamp, `ChatRoom#createTimestamp`, which is a new property.
+  4. Whether the current user is in the chat room allow list, `ChatRoom#isInWhitelist`, which is a new property. This property is updated when the member receives an allow list change callback.
+  5. The timestamp when the current user's mute expires, `ChatRoom#muteExpireTimestamp`, which is a new property. This property is updated when the member receives a mute change callback.
+
+#### Improvements
+
+- Upgraded the dependent Android SDK to 4.16.1.
+- Upgraded the dependent iOS SDK to 4.16.2.
+- Updated the `AOSL` library to 1.3.0.
+- Added support for setting an IPv6 REST address for private deployments.
+- Optimized the reconnection logic and default reconnection address switching.
+- Rewrote the SDK as a federated plugin.
+- Changed the parameters of `ChatRoomEventHandler#onMuteListAddedFromChatRoom`.
+
+#### Issues fixed
+
+- Fixed an issue where chat thread sub-conversations were added to the `conversation` list.
+- Fixed an issue where `EChatEventHandler#onMessageContentChanged` did not return modified content when modifying messages other than text and custom messages.
+- Fixed an issue where a new local conversation was still created when pulling roaming messages with `FetchMessageOptions#needSave` set to `false`.
+- Fixed an issue where members still fetched group or chat room details from the server after receiving the callback that a group or chat room was destroyed.
+- Fixed an issue where updating group attributes affected the group avatar.
+- Fixed an issue where the 220 error code returned during logout did not trigger the callback.
+- Fixed a crash when `fetchReactionDetail` fetched a non-existent Reaction.
+- Fixed an ANR issue on Android caused by frequent calls to APIs in `ChatConversation`.
+- Fixed a crash in `updatePushNickname` when the user was not logged in or when invalid parameters were passed.
+- Fixed a crash in `fetchChatroomInfoFromServer` after the `fetchMembers` parameter was removed.
+- Fixed a crash in `modifyMessage` when an empty message body was passed.
+- Fixed an issue where Android failed to parse the current user's group member attributes.
+- Fixed an issue where `ChatRoomEventHandler#onRemovedFromChatRoom` was not executed.
+- Fixed crashes caused by an empty `announcement` when receiving the `onAnnouncementChangedFromChatRoom` or `onAnnouncementChangedFromGroup` callback.
+- Fixed an issue where the latest message in the conversation fetched by `ChatManager#fetchConversation` did not include Reaction and translation information.
+- Fixed an issue where Android could not get `ChatConversation.marks`.
+- Fixed inaccurate results from `ChatGroupManager.fetchMemberAttributes` on Android.
+- Fixed crashes caused by empty announcement callbacks received from chat rooms or groups.
+- Fixed the thumbnail status of image and video messages.
+
+
+## v1.3.3
+
+### New features
+
+- Added the `ChatRoomManager.joinChatRoom(String, bool, String)` method;
+- Added the `ChatRoomEventHandler.onMemberJoinedFromChatRoom(String, String, String)` callback;
+
+### Issues fixed
+
+- Fixed an issue where the return format of `GroupManager.fetchMemberAttributes` was incorrect on the Android platform.
+
+## v1.3.2
+
+### New features
+
+- Added the `ChatGroupManager.isMemberInGroupMuteList` method to check whether the current user is in the group mute list.
+- Added the `ChatRoomManager.isMemberInChatRoomMuteList` method to check whether the current user is in the chat room mute list.
+
+### Issues fixed
+
+- Build issue for Android platform on Flutter 3.29.0.
+
+## v1.3.1+1
+
+#### Improvements
+
+- Pin message support 1v1 chat.
+- Optimized the success rate of server connection under weak network conditions.
+
+#### Issues fixed
+
+- native: Fixed the issue where the second request to get the friend list (including friend remarks) from the server would not get data if there was no change in the friend list.
+- native: Fixed the issue where the message would still be sent successfully when the attachment failed to send under special circumstances.
+- native: Fixed the issue of incorrect nextkey when pulling roaming messages.
+- native: Optimized the success rate of server connection under weak network conditions.
+- native: Fixed the issue where the cache was not updated in time when blacklisting contacts.
+- native: Fixed the issue where push notifications might not work after logging out and logging back in.
+
+## v1.3.0
+
+#### New features
+
+- Added the `ChatManager#deleteAllMessageAndConversation` method to uni-directionally clear all conversations and messages in them. Meanwhile, you can choose whether to clear the chat history on the server.
+- Added the function of searching for messages by search scope in `MessageSearchScope` during keyword-based search.
+  - `MessageSearchScope`: Includes three message search scopes: the message content, message extension information, and both. 
+  - `ChatManager#loadMessagesWithKeyword`: Searches for messages in all conversations by search scope.
+  - `conversation#loadMessagesWithKeyword`: Searches for messages in a conversation by search scope.
+- Added the function of marking a conversation: 
+  - `ConversationFetchOptions`: Includes options for filtering conversations retrieved from the server. You can only retrieve pinned conversations or marked conversations by setting the options.
+  - `ChatManager#addRemoteAndLocalConversationsMark`: Marks a conversation.
+  - `ChatManager#deleteRemoteAndLocalConversationsMark`: Unmarks a conversation.
+  - `ChatManager#fetchConversationsByOptions`: Gets conversations from the server by setting `ConversationFetchOptions`.
+  - `Conversation#marks`: Gets all marks of a local conversation.
+  - `ChatMultiDevicesEvent#CONVERSATION_UPDATE_MARK`: Conversation mark update event in a multi-device login scenario. If a user adds or removes a conversation mark on one device,  this event is received on other devices of the user.
+- Added the `ChatMessage#isBroadcast` property to indicate whether the message is a broadcast message sent via a RESTful API to all chat rooms under an app.
+- Added the `ChatMessage#deliverOnlineOnly` property to set whether the message is delivered only when the recipient(s) is/are online. If this property is set to `true`, the message is discarded when the recipient is offline.
+- Added the `GroupManager#fetchJoinedGroupCount` method to allow the current user to retrieve the total number of joined groups.
+- Added the error code 706 `CHATROOM_OWNER_NOT_ALLOW_LEAVE` that occurs when the chat room owner leaves the chat room. If `ChatOptions#isChatRoomOwnerLeaveAllowed` is set to `false` during SDK initialization, the chat room is not allowed to leave the chat room. In this case, error 706 is reported if the chat room owner calls the `leaveChatRoom` method to leave the chat room.
+- Added the support for retrieval of historical messages of chat rooms from the server.
+- Added the `ChatOptions#useReplacedMessageContents` property to determine whether the server returns the adjusted text message to the sender if the message content is replaced during text moderation.
+- Added the function of pinning a message:
+  - `ChatManager#pinMessage`: Pins a message.   
+  - `ChatManager#unpinMessage`: Unpins a message.  
+  - `ChatManager#fetchPinnedMessages`: Gets the list of pinned messages in a conversation from the server. 
+  - `Conversation#loadPinnedMessages`: Gets the list of pinned messages in a local conversation.
+  - `MessagePinInfo`: Includes the operator that pins or unpins the message and the operation time.
+  - `ChatMessage#pinInfo`: Includes the message pinning information.
+  - `ChatEventHandler#onMessagePinChanged`: Occurs when the message pinning status changed. When a message is pinned or unpinned in a group or chat room, all members in the group or chat room receive this event. 
+- Added the `ChatOptions#enableEmptyConversation` property to set whether to include empty conversations in the retrieved list of local conversations. This property is set during SDK initialization.
+- Added the `applicant` and `decliner` parameters to the `ChatGroupEventHandler#onRequestToJoinDeclinedFromGroup` event to respectively indicate the user that applies to join the group and the user that declines the join request. 
+- Added the `ChatOptions#messagesReceiveCallbackIncludeSend` property to set whether to return the successfully sent message in the `ChatEventHandler#onMessagesReceived` event.
+- Added the support for returning the modified custom message via the `ChatEventHandler#onMessageContentChanged` event if the message is modified via the RESTful API. 
+
+#### Improvements
+
+- Marked `ChatManager#fetchConversation` and `ChatManager#fetchPinnedConversations` deprecated. Use `ChatManager#fetchConversationsByOptions` instead.
+- Supported the forwarding of single attachment messages by passing in the message body and extension fields, without reuploading the attachment.  
+- Reduced the number of times group specifications are retrieved when a large number of group member events are received during certain scenarios. 
+- Delivered a more accurate chat room member count by optimizing the way to update the member count when members join or leave the chat room.
+- Shortened the time used to call the `ChatManager#markAllConversationsAsRead` method by marking all conversations read more efficiently.
+- Optimized the way the SDK randomly gets server addresses to increase the success rate of requests.
+- Adjusted the timeout period for joining or leaving chat rooms.
+- Optimized the way the connection is re-established upon a connection failure in certain scenarios.
+- Supported for uploading the attachment by fragment when sending an attachment message.
+- Marked the `ChatClient#loginWithAgoraToken` method deprecated. Use the `ChatClient#loginWithToken` method instead.
+- Fine tuned the error message for token-based login for the sake of accuracy.
+- Optimized the way messages are resent.
+- Removed the internal `NetworkOnMainThreadException` exception catching during a network request.
+- Optimized the database upgrade logic.
+- Increased the maximum allowed size of a log file from 2 MB to 5 MB.
+- Added the iOS privacy protocol `PrivacyInfo.xcprivacy`.
+- Updates minimum supported SDK version to Flutter 3.3.0/Dart 3.3.0 .
+
+#### Issues fixed
+
+- For a modified message, the `from` property is missing from the body of the message pulled from the server by an offline user that gets online. 
+- In special scenarios, chat room events are missing when users exit the SDK before login to it.
+- The SDK reconnects to the server twice after the network is back to normal.
+- An incorrect error message is returned for an unlogged-in user that calls the `leaveChatRoom` method.
+- The members in a group are double counted in certain scenarios.
+- The data reporting module crashes occasionally.
+- The SDK is instantiated repeatedly when the `ChatManager#updateMessage` method is called frequently for SDK initialization in multi-thread scenarios.
+
+
+
+## v1.2.0(Dec 5, 2023)
+
+#### New features
+
+- Adds the function of sending a combined message:
+  - `MessageType.COMBINE`: The combined message type.
+  - `CombineMessageBody`: The combined message body class.
+  - `ChatManager#fetchCombineMessageDetail`: Gets the list of original messages included in a combined message from the server.
+- Adds the function of modifying a text message that is sent:
+  - `ChatManager#modifyMessage`: Modifies a text message that is sent.
+  - `ChatEventHandler#onMessageContentChanged`: Occurs when a sent message is modified. The message recipient receives this callback.
+  - `ChatTextMessageBody#lastModifyTime`: Indicates when the content of a sent message is modified last time.
+  - `ChatTextMessageBody#lastModifyOperatorId`: Indicates the user ID of user that modifies a sent message last time.
+  - `ChatTextMessageBody#modifyCount`: Indicates the number of times a sent message is modified.
+- Adds the function of pinning a conversation:
+  - `ChatManager#pinConversation`: Pins or unpins a conversation.
+  - `ChatManager#fetchPinnedConversations`: Gets the list of pinned conversations from the server.
+  - `ChatConversation#isPinned`: Specifies whether the conversation is pinned.
+  - `ChatConversation#pinnedTime`: Specifies when the conversation is pinned.
+- Adds the `fetchConversation` method to get the conversation list from the server. Marks the `ChatManager#getConversationsFromServer` method deprecated.
+- Adds `FetchMessageOptions` as the parameter configuration class for pulling historical messages from the server.
+- Adds the `ChatManager#fetchHistoryMessagesByOption` method to get historical messages of a conversation from the server according to `FetchMessageOptions`, the parameter configuration class for pulling historical messages.
+- Adds the `direction` parameter to `ChatManager#fetchHistoryMessages` to allow you to retrieve historical messages from the server according to the message search direction.
+- Adds the `ChatConversation#deleteMessagesWithTs` method to delete messages sent or received in a certain period from the local database.
+- Adds the `ChatMessage#deliverOnlineOnly` field to specify whether the message is delivered only when the recipient(s) is/are online.
+- Adds the function of managing custom attributes of group members:
+  - `ChatGroupManager#setMemberAttributes`: Sets custom attributes of a group member.
+  - `ChatGroupManager#fetchMemberAttributes` and `GroupManager#fetchMembersAttributes`: Gets custom attributes of group members.
+  - `ChatGroupEventHandler#onAttributesChangedOfGroupMember`: Occurs when a custom attribute is changed for a group member.
+- Adds the `reason` parameter to `ChatRoomEventHandler#onRemovedFromChatRoom` so that the member removed from the chat room knows the removal reason.
+- Adds the `ChatConnectionEventHandler#onAppActiveNumberReachLimit` callback that occurs when the number of daily active users (DAU) or monthly active users (MAU) for the app has reached the upper limit.
+- Adds the `IMultiDeviceDelegate#OnRoamDeleteMultiDevicesEvent` callback that occurs when historical messages in a conversation are deleted from the server on one device. This event is received by other devices.
+- Adds the support for user tokens in the following methods:
+  - `ChatClient#fetchLoggedInDevices`: Gets the list of online login devices of a user.
+  - `ChatClient#kickDevice`: Kicks a user out of the app on a device.
+  - `ChatClient#kickAllDevices`: Kicks a user out of the app on all devices.
+- Adds the `ChatMultiDeviceEventHandler#onRemoteMessagesRemoved` callback that occurs when historical messages in a conversation are deleted from the server on one device. This event is received by other devices.
+- Adds the Reaction operation class `ReactionOperate`:
+  - `Add`: Adds a Reaction.
+  - `Remove`: Removes a Reaction.
+- Adds the `ChatRoomEventHandler#onSpecificationChanged` callback that occurs when details of a chat room are changed.
 
-## 4.15.2
-- 修复被登出时,返回220的错误码无法触发回调的问题；
-- 修复 `fetchReactionDetail` 获取不存在的Reaction时崩溃的问题；
-- 新增 `getCurrentDeviceId` API；
-- 新增 `loadConversationMessagesWithKeyword` API；
-- 修复安卓上频繁调用 `ChatConversation` 中的 API 时, 导致的ANR问题；
+### Improvements
 
+- Optimized the `ChatManager#searchMsgFromDB` method to include custom messages in the message retrieval result.
+- Adapted to the Android 14 system.
 
-## 4.15.1
 
-- 修复 `updatePushNickname` 在未登录和参数异常时导致的崩溃问题；
-- 修复 `fetchChatroomInfoFromServer` 在取消`fetchMembers`参数后导致的崩溃问题；
-- 修复 `modifyMessage` 在传入消息体为空时导致的崩溃问题；
+#### Issues fixed
 
-## 4.15.0
+- `ConnectionEventHandler#onConnected` and `ConnectionEventHandler#onDisconnected` cannot be received on the iOS system.
+- Message extension attributes of the string type in the Android system turn into the Int type.
+- Upon a hot reload on Android, the callback is triggered repeatedly.
+- When you retrieve custom chat room attributes, passing `null` to the key of an attribute causes the app to crash.
+- Chat room events cannot be received by a user that logs in to the Agora Chat server again after logout on the Android platform.
+- `ChatManager#getThreadConversation` error.
+- The `ChatMessage#chatThread` error.
+- The `ChatRoomEventHandler#onSpecificationChanged` is not triggered when the chat room announcement changes.
+- The Android platform crashes when a user is removed from a thread.
+- An error occurs when `ChatThreadManager#fetchChatThreadMembers` is called.
 
-- 安卓依赖 SDK 升级到 4.15.0；
-- iOS以来 SDK 升级到 4.15.0；
-- 支持 Gif 图片消息；
-- 支持 群头像功能；
-- 支持 消息附件鉴权，该功能需要联系商务开通，开通后必须调用 SDK 的 API 才能下载消息附件。
-- 支持 拉取漫游消息时，只拉取指定的群成员发送的消息；
-- 支持 加载本地会话消息时，只加载指定群成员发送的消息；
-- 支持 获取群成员信息 时包括成员加群时间；
-- 修复 安卓获取自己的群成员属性时解释失败的问题；
-- 修复 `ChatRoomEventHandler#onRemovedFromChatRoom` 不执行；
-- 新增 `onMembersJoinedFromGroup` 和 `onMembersExitedFromGroup` 回调，`onMemberJoinedFromGroup` 和 `onMemberExitedFromGroup` 标记过期；
-- 新增 `ChatGroupManager#updateGroupName` 和 `ChatGroupManager#updateGroupDesc`方法，标记 `ChatGroupManager#changeGroupName` 和 `ChatGroupManager#changeGroupDescription` 方法过期;
 
-## 4.13.0+1
 
-- 修复收到 `onAnnouncementChangedFromChatRoom` 回调时，`announcement` 为空导致的崩溃问题。
-- 修复收到 `onAnnouncementChangedFromGroup` 回调时，`announcement` 为空导致的崩溃问题。
-- 增加 `ChatMultiDevicesEvent.UnKnow` 类型，防止新增多设备事件时无法解析；
+## v1.1.1(June 16, 2023)
 
-## 4.13.0
+#### Issues fixed
 
-### 新增特性
+- Fix: Callback methods executing multiple times due to multiple initialization of android.
 
-- 发送后修改消息接口 `ChatManager#modifyMessage` 支持修改各类消息:
-  - 文本/自定义消息：支持修改消息内容（body）和扩展 `attributes`;
-  - 文件/视频/音频/图片/位置/合并转发消息：只支持修改消息扩展 `attributes`。
-  - 命令消息：不支持修改。
-- 新增 `ExtSettings.kDisableIosEnterBackground` 控制项，可控制 iOS 后台的行为和使用方式，详见[初始化文档]([initialization.html](https://doc.easemob.com/document/flutter/initialization.html))。
 
-#### 优化
+## v1.1.0+1(April 4, 2023)
 
-- 优化重连逻辑，默认切换重连的地址。
-- 使用联合插件的形式重写 SDK；
-- 升级 iOS 依赖库为 4.13.0 版本;
-- 升级 Android 依赖库为 4.13.0 版本;
+#### Issues fixed
 
-### 问题修复
+- Fixed Android sending video message url error.
 
-- 修复 `ChatManager#fetchConversation` 方法拉取到的会话最新一条消息不包含表情回复（Reaction）和翻译信息的问题。
+## v1.1.0(February 28, 2023)
 
+#### New features
 
-## 4.12.1
+- Upgrades the native platforms `iOS` and `Android` that the Flutter platform depends on to v1.1.0.
+- Adds the function of managing custom chat room attributes to implement functions like seat control and synchronization in voice chatrooms.
+- Adds the `ChatManager#fetchConversationListFromServer` method to allow users to get the conversation list from the server with pagination.
+- Adds the `ChatMessage#chatroomMessagePriority` attribute to implement the chat room message priority function to ensure that high-priority messages are dealt with first.
 
-- 修复 安卓 `ChatConversation.marks` 获取不到的问题；
-- 修复 安卓 `ChatGroupManager.fetchMemberAttributes` 获取不准的问题；
-- 修复 聊天室/群组 收到的 announcement 回调为空时的崩溃问题；
-- 修复 图片/视频 消息的缩略图状态；
-- 添加 更新消息 `updateMessage` 时如消息不存在的异常抛出；
-- 添加 获取自己是否在聊天室禁言列表中的api `ChatRoomManager.isMemberInChatRoomMuteList`;
+#### Improvements
 
-## 4.12.0
+Changed the message sending result callback from `ChatMessage#setMessageStatusCallBack` to `ChatManager#addMessageEvent`.
 
-#### 新增特性
+#### Issues fixed
 
-- [IM SDK] 用户加入聊天室后会收到如下信息，即调用 joinChatroom 方法后的成功回调中会包含如下信息：
-  1. 聊天室当前人数 ChatRoom#memberCount
-  2. 聊天室全体禁言状态 ChatRoom#isAllMemberMuted
-  3. 聊天室创建时间戳 ChatRoom#createTimestamp，新增属性。
-  4. 当前用户是否在聊天室白名单中 ChatRoom#isInWhitelist。该属性为新增属性，成员收到白名单变更回调时更新。
-  5. 当前用户被禁言截止时间戳 ChatRoom#muteExpireTimestamp。该属性为新增属性，成员收到禁言变更回调时更新。
+`ChatManager#deleteMessagesBeforeTimestamp` execution failures.
 
+## v1.0.9(December 19, 2022)
 
-## 4.11.0
 
-- 修改 `ChatRoomEventHandler#onMuteListAddedFromChatRoom` 参数；
+#### Issues fixed
 
-## 4.10.1
+- Some alerts on Android 12.
+- The inconsistency of messages in the memory and the database due to a call to the `updateMessage` method in rare scenarios.
+- The `ChatGroupEventHandler#onDestroyedFromGroup` callback that occurs when a group is destroyed does not work on the Android platform.
+- The `ChatGroupEventHandler#onAutoAcceptInvitationFromGroup` callback that occurs when a user's group invitation is accepted automatically does not work on the Android platform.
+- Crashes in rare scenarios.
 
-- 修复 安卓安装环境下 `fetchHistoryMessagesByOption` 方向不准确的问题；
+## v1.0.8(November 22, 2022)
 
+#### Improvements
 
-## 4.10.0
+Removed some redundant logs of the SDK.
 
-- 修复 `fetchSilentModeForConversations` 方法获取会话的免打扰状态失败的问题。
-- 修复 ios `applicationDidEnterBackground` 和 `applicationWillEnterForeground` 不执行的问题。
+#### Issues fixed
 
-## 4.8.2+1
+- Failures in getting a large number of messages from the server in few scenarios.
+- The issue of incorrect data statistics.
+- Crashes caused by log printing in rare scenarios.
 
-- 修复安卓端可能出现的消息格式转换失败;
+## v1.0.7(September 7, 2022)
 
-## 4.8.2
 
-#### 修复
+#### New features
 
-- 修复 ios `ChatManager.searchMsgsByOptions`, `ChatConversation.searchMsgsByOptions` 方法类型不准的问题；
+- Adds the `customEventHandler` attribute in `ChatClient` to allow you to set custom listeners to receive the data sent from the Android or iOS device to the Flutter. 
+- Adds event listener classes for event listening.
+- Adds the `PushTemplate` method in `PushManager to support custom push templates. 
+- Adds the `isDisabled` attribute in `Group` to to indicate whether a group is disabled. This attribute needs to be set by developers at the server side. This attribute is returned when you call the `fetchGroupInfoFromServer` method to get group details.
+- Adds the the `displayName` attribute in `PushConfigs` to allow you to check the nickname displayed in your push notifications.
 
-## 4.8.1+1
+#### Improvements
 
-#### 新增特性
+- Marked `AddXXXManagerListener` methods (like `addChatManagerListener`  and `addContactManagerListener`) as deprecated.
 
-- 新增 `ChatRoomManager.joinChatRoom(String roomId, {bool leaveOther = true,String? ext,})` 方法，支持设置加入聊天室时携带的扩展信息，并指定是否退出所有其他聊天室。
-- 新增 `ChatRoomEventHandler.onMemberJoinedFromChatRoom(String roomId, String participant, String? ext)` 回调，当用户加入聊天室携带了扩展信息时，聊天室内其他人可以在用户加入聊天室的回调中，获取到扩展信息。
-- 新增 `ChatPushManager.syncConversationsSilentMode()` 方法，支持从服务器获取所有会话的推送通知方式的设置。
-- 新增 `ChatPushManager.bindDeviceToken(String notifierName, String deviceToken)` 方法。
-- 新增 `ChatConversation.remindType()` 方法，用于本地存储会话的推送通知方式。
-- 新增 `ChatConversation.getLocalMessageCount()` 方法，获取指定时间范围内本地数据库中的消息数量。
-- 新增 `LoginExtensionInfo` 用户设备扩展信息。
-- 新增 `ChatOptions.loginExtension` 设置登录时携带的扩展信息。
-- 新增 `ChatManager.searchMsgsByOptions` 根据单个或多个消息类型，搜索本地数据库中所有会话的消息。
-- 新增 `ChatConversation.searchMsgsByOptions` 根据单个或多个消息类型，搜索本地数据库中所有会话的消息。
+- Modified API references.
 
+## v1.0.6(July 21, 2022)
 
+#### Issues fixed
 
-#### 优化
+- The callbacks for messaging thread were not triggered on iOS.
+- The callbacks for reaction were not triggered in iOS.
+- Occasional crashes occurred on Android when retrieving conversations from the server.
 
-- 支持 AUT 协议， 优化弱网环境下的服务连接成功率;
-- `updateHMSPushToken`、`updateFCMPushToken`、`updateAPNsDeviceToken` 方法过期，`ChatOptions` 中的 `enableOppoPush`、`enableMiPush`、`enableMeiZuPush`、`enableFCM`、`enableVivoPush`、`enableHWPush`、`enableAPNs`、`enableHonorPush` 过期， 使用 `ChatPushManager.bindDeviceToken` 代替；
-- 修改 `ChatConnectionEventHandler.onUserDidLoginFromOtherDevice(String deviceName)` 方法为 `ChatConnectionEventHandler.onUserDidLoginFromOtherDevice(LoginExtensionInfo info)`
+## v1.0.5(June 17, 2022)
 
-#### 修复
+This is the first release for the Agora Chat Flutter SDK, which enables you to add real-time chatting functionalities to an Android or iOS app. Major features include the following:
 
-- 修复 `fetchConversationsByOptions` 偶尔引起的崩溃；
-- 修复拉黑联系人时缓存未及时更新的问题。
-- 修复退出登录再登录后推送可能不工作的问题。
+- Sending and receiving messages in one-to-one chats, chat groups, and chat rooms.
+- Retrieving and managing conversations and messages.
+- Managing chat groups and chat rooms.
+- Managing contact and block lists.
 
+For the complete feature list, see [Product Overview](./agora_chat_overview?platform=Flutter).
 
-## 4.6.1+3
+Agora Chat is charged on a MAU (Monthly Active Users) basis. For details, see [Pricing for Agora Chat](./agora_chat_pricing?platform=Flutter) and [Pricing Plan Details](./agora_chat_plan?platform=Flutter).
 
-#### 修复
+Refer to the following documentations to enable Agora Chat and use the Chat SDK to implement real-time chatting functionalities in your app:
 
-- 修复安卓线程池导致的oom问题。
-
-## 4.6.1+2
-
-#### 优化
-
-- 安卓平台下 OPPO 推送更新至 oppo_push_3.5.2.aar。 OPPO 推送支持 REALME 类型设备。
-- 安卓平台下 vivo 推送更新至 vivo_push_v4.0.4.0_504.aar。
-- 安卓平台下 小米推送更新至 MiPush_SDK_Client_6_0_1-C_3rd.aar。
-- 安卓平台下 魅族推送更新至 com.meizu.flyme.internet:push-internal:4.3.0。
-
-
-## 4.6.1+1
-
-#### 优化
-
-- 优化链接问题
-
-## 4.6.1
-
-#### 优化
-
-- recallMessage 方法增加 ext参数，支持消息撤回时携带自定义信息，类型为String；
-- 新增消息撤回事件 ChatEventHandler#onMessagesRecalledInfo, 支持离线期间撤回的消息通知给接收方。
-
-#### 修复
-
-- 修复服务端获取好友列表（包含好友备注）时，在好友列表无变化时，第二次请求获取不到数据的问题。
-- 修复特殊情况下附件发送失败，消息仍然成功发送的问题。
-- 修复拉取漫游消息时 nextkey 错误的问题。
-- 修复安卓部分场景下，用户升级数据库后，在同一个进程下登录新的用户，构建数据库表失败的问题。
-
-## 4.5.0
-
-#### 新增特性
-
-- 新增 `ChatManager#deleteAllMessageAndConversation` 方法，用于[清空当前用户的聊天记录](message_delete.html#清空聊天记录)，包括消息和会话，同时可以选择是否清除服务端的聊天记录。
-- 新增[根据搜索范围搜索消息](message.search.html#根据搜索范围搜索所有会话中的消息)：根据关键字搜索消息时，可以选择 `MessageSearchScope` 中的搜索范围。
-  - `MessageSearchScope`：包含三个消息搜索范围，即搜索消息内容、只搜索消息扩展信息以及同时搜索消息内容以及扩展信息。
-  - `ChatManager#loadMessagesWithKeyword`：根据搜索范围搜索所有会话中的消息。
-  - `ChatConversation#loadMessagesWithKeyword`：根据搜索范围搜索当前会话中的消息。
-- 支持[会话标记](conversation_mark.html)功能。
-  - `ConversationFetchOptions` 从服务器获取会话的选项，可以用来回去置顶会话或者是标记后的会话。
-  - `ChatManager#addRemoteAndLocalConversationsMark`：标记会话。
-  - `ChatManager#deleteRemoteAndLocalConversationsMark`：取消标记会话。
-  - `ChatManager#fetchConversationsByOptions`：根据 `ConversationFetchOptions` 选项从服务器分页查询会话列表。
-  - `ChatConversation#marks`：获取本地单个会话的所有标记。
-  - `EMChatMultiDevicesEvent#CONVERSATION_UPDATE_MARK`：多设备场景下的会话标记事件。当前用户在一台登录设备上更新了会话标记，包括添加和移除会话标记，其他登录设备会收到该事件。
-- 支持[聊天室漫游消息](message_retrieve.html#从服务器获取指定会话的历史消息)。
-- 新增 `EMChatOptions#useReplacedMessageContents` 开关。开启后，发送消息时如果被内容审核进行了内容替换，发送方可以收到替换后的内容。
-- 新增[置顶消息](message_pin.html)功能。
-  - 新增 `ChatManager#pinMessage` 方法，用于置顶消息。
-  - 新增 `ChatManager#unpinMessage` 方法，用于取消置顶消息。
-  - 新增 `ChatManager#fetchPinnedMessages` 方法，从服务器获取指定会话的置顶消息。
-  - 新增 `ChatConversation#loadPinnedMessages` 方法，返回会话下的所有置顶消息。
-  - 新增 `MessagePinInfo` 类，包含置顶以及取消置顶的操作者以及操作时间。
-  - 新增 `EMChatMessage#pinInfo` 方法，展示消息的置顶详情。
-  - 新增 `ChatEventHandler#onMessagePinChanged` 事件。当用户在群组或聊天室会话进行置顶操作时，群组或聊天室中的其他成员会收到该回调。
-- 新增 `ChatOptions#messagesReceiveCallbackIncludeSend` 开关。开启后，在 `ChatEventHandler#onMessagesReceived` 回调里增加发送成功的消息。
-- 消息修改回调 `ChatEventHandler#onMessageContentChanged` 中支持返回通过 RESTful API 修改的自定义消息。
-
-#### 优化
-
-- 不再提供`ChatManager#fetchConversation` 和 `ChatManager#fetchPinnedConversations` 方法，使用 `ChatManager#fetchConversationsByOptions` 方法替代。
-- 支持使用消息 body 完成[单条转发](message_forward.html)，无需重新上传附件。
-- 在部分场景下，降低接收到大量群成员事件通知时获取群组详情的次数。
-- 在[聊天室成员进出时更新聊天室成员人数](room_manage.html#实时更新聊天室成员人数)，使人数更新更及时准确。   
-- 优化 token 登录时的错误提示信息，使错误提示更精细。   
-- 优化将所有会话置为已读的时间。    
-- 优化 SDK 内部随机取服务器地址的逻辑，提升请求成功率。   
-- 优化进出聊天室超时时间。   
-- 优化部分场景下连接失败后重连的逻辑。  
-- 优化附件类型消息发送时中的附件上传，支持分片上传。    
-- 优化发消息时重试的逻辑。
-- Android/iOS SDK 移除网络请求时对 `NetworkOnMainThreadException` 异常的捕获。
-- 数据库升级逻辑优化。  
-- 单个日志文件大小由 2 MB 提升到 5 MB。
-- iOS 平台增加了隐私协议 `PrivacyInfo.xcprivacy`。
-- Android 平台适配 Android 14 Beta：适配以 Android 14 为目标平台时动态注册广播接收者必须设置 `RECEIVER_EXPORTED` 或者 `RECEIVER_NOT_EXPORTED` 的规定。
-
-#### 修复
-
-- 特殊场景下，SDK 退出后再登录会丢失聊天室监听事件问题。
-- 部分场景下群成员人数计算重复问题。
-- 修复数据上报模块偶现的崩溃问题。
-- 修复部分场景下调用 `ChatManager#updateMessage` 方法更新消息时导致的崩溃问题。
-
-## 4.2.1
-
-#### 新增
-
-- ios SDK 中增加了隐私协议 PrivacyInfo.xcprivacy;
-
-#### 修复
-
-- 修复偶现db问题；
-- 部分场景下群成员人数计算重复问题。
-- 修复合并转发附件可能重复上传问题；
-- 修复附件消息转发失败的问题；
-- 修复部分场景下 `ChatManager#updateMessage` 消息更新导致的崩溃;
-
-#### 优化
-
-- `login` 方法过期，使用 `loginWithToken` 方法和 `loginWithPassword` 方法代替；
-- 优化附件上传；
-- 减小安卓包体积；
-- 在部分场景下，降低接收到大量群成员事件通知时获取群组详情的次数;
-- 在聊天室成员进出时更新聊天室成员人数，使人数更新更及时准确;
-- 优化 token 登录时的错误提示信息，使错误提示更精细;
-- 优化 SDK 内部随机取服务器地址的逻辑，提升请求成功率;
-- 优化 SDK 内部随机取服务器地址的逻辑，提升请求成功率;
-- 加入聊天室时，若传入的聊天室 ID 不存在，可实现自动创建聊天室;
-- 支持获取聊天室漫游消息;
-- 优化聊天室进出的超时时间;
-- 部分场景下连接失败重连的优化;
-
-
-## 4.2.0
-
-#### 新增
-
-- 增加 设置好友备注功能。
-- 增加 `ChatContactManager#fetchContacts` 和 `ChatContactManager#fetchAllContacts` 方法分别从服务器一次性和分页获取好友列表，每个好友对象包含好友的用户 ID 和好友备注。
-- 增加 `ChatContactManager#getContact` 方法从本地获取单个好友的用户 ID 和好友备注。
-- 增加 `ChatContactManager#getAllContacts` 方法从本地分页获取好友列表，每个好友对象包含好友的用户 ID 和好友备注。
-- 增加 `ChatMessage#isBroadcast` 属性用于判断通过该消息是否为聊天室全局广播消息。可通过调用 REST API 发送聊天室全局广播消息。
-- 增加 `ChatGroupManager#fetchJoinedGroupCount` 方法用于从服务器获取当前用户已加入的群组数量。
-- 增加 错误码 `706` 表示聊天室所有者不允许离开聊天室。若初始化时，`ChatOptions#isChatRoomOwnerLeaveAllowed` 参数设置为 false，聊天室所有者调用 `ChatRoomManager#leaveChatroom` 方法离开聊天室时会提示该错误。
-- 增加 `ChatOptions#enableEmptyConversation` 属性用于在初始化时配置获取会话列表时是否允许返回空会话。
-- 增加 申请入群被拒绝的回调 `ChatGroupEventHandler#onRequestToJoinDeclinedFromGroup` 中新增 decliner 和 applicant 参数表示申请者和拒绝者的用户 ID。
-
-#### 优化
-
-- 统一 Agora Token 和 EaseMob Token 登录方式，原 `ChatClient#login` 方法废弃，使用 `ChatClient#loginWithToken` 和 `ChatClient#loginWithPassword` 方法代替。此外，新增 EaseMob Token 即将过期及已过期的回调，即 EaseMob Token 已过期或有效期过半时也返回 `ChatConnectionEventHandler#onTokenDidExpire` 和 `ChatClientDelegate#onTokenWillExpire` 回调。
-
-#### 修复
-
-- 修复网络恢复时重连 2 次的问题。
-- 修复未登录时调用 leaveChatroom 方法返回的错误提示不准确。
-
-## 4.1.3
-
-#### 新增
-
-- 支持 安卓 14;
-- 新增 开启 荣耀推送开关 `ChatOptions#enableHonorPush` 方法；
-
-#### 修复
-
-- 修复调用 `ChatManager#getThreadConversation` 报错；
-- 修复 `ChatMessage#chatThread` 方法报错;
-- 修复 `ChatRoomEventHandler#onSpecificationChanged` 回调不执行。
-- 修复 `ChatThreadManager#fetchChatThreadMembers` 崩溃。
-- 修复特殊场景下，安卓平台退出后再登录会丢失聊天室监听事件问题。
-- 修复修改消息后，离线用户上线后拉取历史消息，消息体中缺乏 from 属性的问题。
-
-## 4.1.0
-
-#### 新增：
-- 增加 `ChatOptions#osType`属性和`ChatOptions#deviceName`属性，用户设置设备类型和设备名称；
-- 增加 `Combine` 消息类型，用于合并转发消息；
-- 增加 `ChatManager#fetchCombineMessageDetail` 方法;
-- 增加 `ChatManager#modifyMessage` 方法用户修改已发送的消息，目前只支持文本消息消息;
-- 增加 `ChatEventHandler#onMessageContentChanged` 回调，用户监听消息编辑实现；
-- 增加 `ChatClient#fetchLoggedInDevices` 方法，可是使用token获取已登录的设备列表；
-- 增加 `ChatClient#kickDevice` 方法，可以使用 token 踢掉指定设备；
-- 增加 `ChatClient#kickAllDevices` 方法，可以使用 token 踢掉所有已登录设备；
-- 增加 `ChatManager#fetchConversation` 方法，获取服务器会话列表，原方法 `ChatManager#getConversationsFromServer` 作废；
-- 增加 `ChatManager#pinConversation` 方法，实现在服务器会话列表中 置顶/取消置顶 会话；
-- 增加 `hatManager#fetchPinnedConversations` 方法，从服务器获取已置顶会话；
-- 增加 `ChatMessage#receiverList` 属性，用于在群组/聊天室中发送定向消息；
-
-#### 修复：
-- 修复 ios 中无法收到 `ChatConnectionEventHandler#onConnected` 和 `ChatConnectionEventHandler#onDisconnected` 的问题；
-- 修复 安卓消息中，发送方`attributes` 中包含string类型，接收方变为int类型的问题；
-
-#### 优化：
-- 离开聊天室 `ChatRoomEventHandler#onRemovedFromChatRoom` 回调中增加离开原因;
-- 被其他设备踢下线 `ChatConnectionEventHandler#onUserDidLoginFromOtherDevice` 回调中增加操作人deviceName;
-
-
-## 4.0.2
-
-#### 新增：
-- 增加 `ChatGroupManager#setMemberAttributes` 方法，用于设置群成员属性；
-- 增加 `ChatGroupManager#fetchMemberAttributes` 和 `GroupManager#fetchMembersAttributes` 方法用户获取群成员属性；
-- 增加 `ChatGroupEventHandler#onAttributesChangedOfGroupMember` 群成员属性变更回调;
-- 增加 `ChatManager#fetchHistoryMessagesByOption` 方法；
-- 增加 `ChatConversation#deleteMessagesWithTs` 方法；
-- 增加 `ChatMessage#deliverOnlineOnly` 属性用于设置只向在线用户投递消息；
-
-#### 修复：
-- 修复安卓 hot reload 后回调多次的问题；
-- 修复iOS 获取聊天室属性key传null导致的崩溃问题；
-
-#### 优化：
-- 为`ChatManager#fetchHistoryMessages` 方法增加获取方向；
-
-## 4.0.0+7
-
-#### 修复
-- 修复初始化无返回的问题。
-
-## 4.0.0+6
-
-#### 修复
-- 修复下载附件结束后状态不准确的问题。
-
-## 4.0.0+7
-- 修复初始化问题。
-
-## 4.0.0+6
-- 修复下载附件结束后状态不准确的问题。
-
-## 4.0.0+5
-
-#### 修复
-- 修复下载附件回调不执行。
-
-## 4.0.0+4
-
-#### 修复
-- 安卓构建视频消息崩溃的问题。
-
-## 4.0.0+3
-
-#### 修复
-- 安卓 `onRemovedFromChatRoom` 不回调。
-
-## 4.0.0+2
-
-#### 修复
-
-- 修复List<String>? 转换失败；
-- 修复图片消息和视频消息转换失败；
-
-## 4.0.0
-
-#### 新增特性
-
-- 依赖的原生平台 `iOS` 和 `Android` 的 SDK 升级为 v4.0.0 版本。
-- 新增 `ChatManager#fetchConversationListFromServer` 方法实现从服务器分页获取会话列表。
-- 新增 `ChatMessage#chatroomMessagePriority` 属性实现聊天室消息优先级功能，确保高优先级消息优先处理。
-
-#### 优化
-
-修改发送消息结果的回调由 `ChatMessage#setMessageStatusCallBack` 修改为 `ChatManager#addMessageEvent`。
-
-#### 修复
-
-修复 `ChatManager#deleteMessagesBeforeTimestamp` 执行失败的问题。
-
-# 3.9.9+1
-修复：
-1. 修复ios群已读回执不执行；
-
-新增：
-1. 增加会话根据时间删除服务器漫游消息api `ChatConversation#removeServerMessageBeforeTimeStamp(timestamp)`。
-
-# 3.9.9
-修复：
-1.修复极端情况下 SDK 崩溃的问题。
-
-## 3.9.7+4
-修复：
-1. 安卓不执行onGroupDestroyed回调；
-2. 构造位置消息时无法设置buildingName；
-
-## 3.9.7+3
-修复：
-1. 安卓不会执行 onAutoAcceptInvitationFromGroup 回调；
-
-## 3.9.7+2
-
-修复：
-1. 修复 StartCallback() 不会回调的问题；
-2. 修复 iOS 根据时间获取消息失败的问题；
-
-## 3.9.7+1
-
-修复:
-  1. 修复 安卓 fcm send id偶现为空的问题；
-  2. 修复 安卓 `SilentModeResult` expireTs 为空的问题；
-
-## 3.9.7
-
-新增特性:
-  1. 新增聊天室自定义属性功能。
-  2. 新增 `areaCode` 方法限制连接边缘节点的范围。
-  3. `ChatGroup` 中增加 `isDisabled` 属性显示群组禁用状态，需要开发者在服务端设置。该属性在调用 `ChatGroupManager` 中的 `fetchGroupInfoFromServer` 方法获取群组详情时返回。
-
-优化：
-  1. 移除 SDK 一部分冗余日志。
-
-修复
-  1. 修复极少数场景下，从服务器获取较大数量的消息时失败的问题。
-  2. 修复数据统计不正确的问题。
-  3. 修复极少数场景下打印日志导致的崩溃。
-
-## 3.9.5
-
-- 将 AddManagerListener 方法标为过期；
-- 增加 customEventHandler；
-- 添加 EventHandler；
-- 增加 PushTemplate 方法；
-- 增加 Group isDisabled 属性；
-- 增加 PushConfigs displayName 属性；
-- 修改 Api referances;
-- 升级原生依赖为 3.9.5
-
-## 3.9.4+3
-
-- 修复 安卓端 `loadAllConversations` crash.
-
-## 3.9.4+2
-
-- 修复 `ChatClient.getInstance.startCallback()` 执行时安卓偶现崩溃；
-
-## 3.9.4+1
-- 增加ChatSilentMode;
-
-## 3.9.4
-- 移除过期Api；
-
-## 3.9.3
-- 新增thread实现；
-- 修复部分bug；
-- 依赖原生sdk版本为3.9.3
-
-## 3.9.2
-- 增加Reaction实现；
-- 增加举报功能；
-- 增加获取群组已读api；
-- 添加下载群文件进度回调；
-- 修复下载视频偶现失败；
-- 修复获取群免打扰详情失败；
-- 修复 startCallback是 ios 偶现 crash;
-
-
-
-## 3.9.1
-- 增加 用户在线状态 (Presence) 订阅功能；
-- 增加 翻译 功能更新，增加自动翻译接口。用户可以按需翻译，和发消息自动翻译。
-
-## 3.9.0+2
-
-- 修改用户退出/离线回调;
-  - EMConnectionListener#onConnected: 长连接恢复;
-  - EMConnectionListener#onDisconnected: 长连接断开;
-  - EMConnectionListener#onUserDidLoginFromOtherDevice: 当前账号在其他设备登录;
-  - EMConnectionListener#onUserDidRemoveFromServer: 当前账号被服务器删除;
-  - EMConnectionListener#onUserDidForbidByServer: 当前账号登录被服务器拒绝;
-  - EMConnectionListener#onUserDidChangePassword: 当前账号密码变更;
-  - EMConnectionListener#onUserDidLoginTooManyDevice: 当前账号登录太多设备;
-  - EMConnectionListener#onUserKickedByOtherDevice: 当前账号被登录的其他设备设置下线;
-  - EMConnectionListener#onUserAuthenticationFailed: 当前账号鉴权失败;
-- 依赖原生sdk版本为3.9.2.1；
-- 修复ios group ack 问题；
-
-## 3.9.0+1
-
-- 修复message.attribute不准;
-
-- 增加 ChatClient.getInstance.startCallback() 方法
-  
-  ```dart
-  ChatClient.getInstance.startCallback();
-  ```
-  
-  只有调用该方法后，`ChatContactManagerListener`、 `ChatGroupEventListener` 、 `ChatRoomEventListener` 回调才会开始执行;
-
-- 修复删除聊天室白名单成员失败;
-
-## 3.9.0
-
-- 增加单人推送免打扰接口；
-
-- 增加api referance;
-
-- 增加renewToken api;
-
-- 修改消息callback方式；
-
-- iOS移除自动绑定deviceToken，如需使用，需要在iOS端单独增加；
-
-- android移除多余权限；
-
-- 修改已知bug；
-
-## 3.8.9
-
-- 增加单聊消息免打扰；
-- 去除不必要的信息收集；
-- 修复安卓某些场景下数据库损坏导致崩溃；
-- 移除对FCM11.4.0的依赖；
-- 修复安卓WAKE_LOCK权限导致的崩溃；
-- 增加用户被全局禁言时发消息错误码；
-- 增强数据传输安全性；
-- 增强本地数据存储安全性；
-- 新增使用Token登录时，Token过期的回调；
-- 修复拉取历史漫游消息不全的bug；
-- 默认使用https；
-- 优化登录速度；
-
-## 3.8.3+9
-
-- 将设置推送相关操作从ChatPushConfigs中移到ChatPushManager中；
-- 修复已知bug；
-
-## 3.8.3+8
-
-- 修复ios使用token登录失败；
-- 修改Login方法和Logout方法返回值；
-
-## 3.8.3+6
-
-- 修改EMImPushConfig为ChatPushConfigs;
-- 删除ChatOptions中的ChatPushConfig.设置推送证书时直接调用ChatOptions即可;
-- ChatGroup中移除ShareFiles，如果需要获取共享文件，请调用Api:
-  `ChatClient.getInstance.groupManager.getGroupFileListFromServer(groupId)` 
-- 将isConnected和isLoginBefore、Token改为从原生获取；
-- 修复安卓设置群组免打扰失效的问题；
-- 修复获取公开群crash的问题；
-- 修改throw error的逻辑；
-- 修改构造文本消息时的方法，需要传入参数名；
-- 修改部分原生方法逻辑；
-- 调整项目目录结构；
-- 将`onConversationRead`回调方法参数改为必选；
-- 
-
-## 3.8.3+5
-
-- 更新安卓依赖原生sdk版本；
-- 修复获取本地群组crash；
-
-## 3.8.3+4
-
-* 修复消息attribute类型变为bool类型；
-* 修复群组免打扰属性不准；
-* 修复ios importMessages方法bug；
-* 修复群、聊天室禁言时不执行回调的bug；
-* 修复下载方法不执行callback；
-* 构造文件消息提供设置文件大小属性；
-* 修改`ChatGroupChangeListener` 为 `ChatGroupEventListener`
-
-## 3.8.3+3
-
-* 修复安卓下resendMessage方法发送失败时不回调onError；
-* 修复fetchChatRoomMembers返回类型错误；
-
-## 3.8.3+2
-
-* 增加群组已读回执；
-* 不在提供ChatContact类，直接返回String类型username;
-
-## 3.8.3
-
-* 增加用户属性；
-* 修复已知bug；
-
-## 1.0.0
-
-* 用户管理；
-* 群组管理；
-* 聊天室管理；
-* 会话管理；
-* 通讯录管理；
-* 推送管理；
+- [Enable and Configure Agora Chat](./enable_agora_chat)
+- [Get Started with Agora Chat](./agora_chat_get_started_flutter)
+- [Messages](./agora_chat_message_overview?platform=Flutter)
+- [Chat Group](./agora_chat_group_overview?platform=Flutter)
+- [Chat Room](./agora_chat_chatroom_overview?platform=Flutter)
+- [API Reference](./api-ref?platform=Flutter)
