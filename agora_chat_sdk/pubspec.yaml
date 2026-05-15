@@ -1,6 +1,6 @@
 name: agora_chat_sdk
 description: Integrate the Chat SDK to enjoy the global IM services with high reliability, ultra-low latency, and high concurrency.
-version: 4.16.0
+version: 1.4.0
 homepage: https://www.agora.io/en/
 
 environment:
@@ -33,5 +33,3 @@ flutter:
         default_package: agora_chat_sdk_ios
       android:
         default_package: agora_chat_sdk_android
-      ohos:
-        default_package: agora_chat_sdk_ohos
