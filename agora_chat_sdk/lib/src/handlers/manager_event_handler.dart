@@ -13,7 +13,7 @@ import '../internal/inner_headers.dart';
 ///
 /// Adds connection event handler:
 /// ```dart
-///   ChatClient.getInstance.addConnectionEventHandler(UNIQUE_HANDLER_ID, ChatConnectionEventHandler());
+///   ChatClient.getInstance.addConnectionEventHandler(UNIQUE_HANDLER_ID, ConnectionEventHandler());
 /// ```
 ///
 /// Remove a connection event handler:
@@ -30,7 +30,7 @@ import '../internal/inner_headers.dart';
 ///
 /// 添加 connection event handler:
 /// ```dart
-///   ChatClient.getInstance.addConnectionEventHandler(UNIQUE_HANDLER_ID, ChatConnectionEventHandler());
+///   ChatClient.getInstance.addConnectionEventHandler(UNIQUE_HANDLER_ID, ConnectionEventHandler());
 /// ```
 ///
 /// 移除 connection event handler:
@@ -38,7 +38,7 @@ import '../internal/inner_headers.dart';
 ///   ChatClient.getInstance.removeConnectionEventHandler(UNIQUE_HANDLER_ID);
 /// ```
 /// ~end
-class ChatConnectionEventHandler {
+class ConnectionEventHandler {
   /// ~english
   /// Occurs when the SDK connects to the chat server successfully.
   /// ~end
@@ -232,7 +232,7 @@ class ChatConnectionEventHandler {
   /// Param [onOfflineMessageSyncFinish] 从服务器拉取离线消息结束时触发。
   ///
   /// ~end
-  ChatConnectionEventHandler({
+  ConnectionEventHandler({
     this.onConnected,
     this.onDisconnected,
     this.onUserDidLoginFromOtherDevice,

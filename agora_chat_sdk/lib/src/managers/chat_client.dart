@@ -229,7 +229,7 @@ class ChatClient {
   ChatOptions? get options => _options;
   ChatOptions? _options;
 
-  final Map<String, ChatConnectionEventHandler> _connectionHandlers = {};
+  final Map<String, ConnectionEventHandler> _connectionHandlers = {};
   final Map<String, ChatMultiDeviceEventHandler> _multiDeviceHandlers = {};
 
   void Function(Map map)? customEventHandler;
@@ -250,7 +250,7 @@ class ChatClient {
   ///
   /// Param [identifier] The custom handler identifier, which is used to find the corresponding handler.
   ///
-  /// Param [handler] The handler for connection event. See [ChatConnectionEventHandler].
+  /// Param [handler] The handler for connection event. See [ConnectionEventHandler].
   /// ~end
   ///
   /// ~chinese
@@ -258,11 +258,11 @@ class ChatClient {
   ///
   /// Param [identifier] 监听事件对应 ID。
   ///
-  /// Param [handler] 监听的事件。 请见 [ChatConnectionEventHandler]。
+  /// Param [handler] 监听的事件。 请见 [ConnectionEventHandler]。
   /// ~end
   void addConnectionEventHandler(
     String identifier,
-    ChatConnectionEventHandler handler,
+    ConnectionEventHandler handler,
   ) {
     _connectionHandlers[identifier] = handler;
   }
@@ -297,7 +297,7 @@ class ChatClient {
   ///
   /// **Return** 连接状态监听。
   /// ~end
-  ChatConnectionEventHandler? getConnectionEventHandler(String identifier) {
+  ConnectionEventHandler? getConnectionEventHandler(String identifier) {
     return _connectionHandlers[identifier];
   }
 
@@ -759,7 +759,7 @@ class ChatClient {
   /// ~end
   ///
   /// ~chinese
-  /// 当用户在声网 token 登录状态时，且在 [ChatConnectionEventHandler.onTokenWillExpire] 实现类中收到 token 即将过期事件的回调通知可以调用这个 API 来更新 token，避免因 token 失效产生的未知问题。
+  /// 当用户在声网 token 登录状态时，且在 [ConnectionEventHandler.onTokenWillExpire] 实现类中收到 token 即将过期事件的回调通知可以调用这个 API 来更新 token，避免因 token 失效产生的未知问题。
   ///
   /// Param [agoraToken] 新声网 Token.
   ///

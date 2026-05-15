@@ -152,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _addChatListener() {
     ChatClient.getInstance.addConnectionEventHandler(
       "CONNECTION_UNIQUE_HANDLER_ID",
-      ChatConnectionEventHandler(
+      ConnectionEventHandler(
         onConnected: () {
           _addLogToConsole("onConnected");
         },
