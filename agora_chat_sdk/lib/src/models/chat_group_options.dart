@@ -1,4 +1,5 @@
-import '../internal/inner_headers.dart';
+import 'package:agora_chat_sdk/agora_chat_sdk.dart';
+import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
 
 /// ~english
 /// The group options to be configured when the chat group is created.
@@ -110,7 +111,7 @@ class ChatGroupOptions {
   final String? ext;
 
   Map toJson() {
-    Map data = Map();
+    Map data = {};
     data['style'] = groupStyleTypeToInt(style);
     data['maxCount'] = maxCount;
     data['inviteNeedConfirm'] = inviteNeedConfirm;
@@ -120,6 +121,6 @@ class ChatGroupOptions {
 
   @override
   String toString() {
-    return this.toJson().toString();
+    return toJson().toString();
   }
 }

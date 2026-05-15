@@ -1,6 +1,5 @@
-import UIKit
 import Flutter
-import agora_chat_sdk
+import UIKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -9,16 +8,6 @@ import agora_chat_sdk
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
-      
-//      Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { t in
-//          if(self.hasPlugin("ImFlutterSdkPlugin")) {
-//              print("find")
-//              let wrapper = self.valuePublished(byPlugin: "ImFlutterSdkPlugin") as! EMClientWrapper
-//              wrapper.sendData(toFlutter: ["key":"value"])
-//          }else {
-//              print("no find")
-//          }
-//      }
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

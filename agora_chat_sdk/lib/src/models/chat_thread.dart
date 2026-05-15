@@ -1,4 +1,5 @@
-import '../internal/inner_headers.dart';
+import 'package:agora_chat_sdk/agora_chat_sdk.dart';
+import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
 
 /// ~english
 /// The message thread class.
@@ -89,7 +90,7 @@ class ChatThread {
   /// ~end
   final ChatMessage? lastMessage;
 
-  ChatThread._private({
+  ChatThread({
     required this.threadId,
     this.threadName,
     required this.owner,
@@ -118,7 +119,7 @@ class ChatThread {
       threadName = map["threadName"];
     }
 
-    return ChatThread._private(
+    return ChatThread(
       threadId: threadId,
       owner: owner,
       messageId: messageId,
@@ -142,7 +143,7 @@ class ChatThread {
     int? createAt,
     ChatMessage? lastMessage,
   }) {
-    return ChatThread._private(
+    return ChatThread(
       threadId: threadId ?? this.threadId,
       threadName: threadName ?? this.threadName,
       owner: owner ?? this.owner,
@@ -199,26 +200,7 @@ class ChatThreadEvent {
 
   factory ChatThreadEvent.fromJson(Map map) {
     String from = map["from"];
-    int iType = map["type"];
-    ChatThreadOperation type = ChatThreadOperation.UnKnown;
-    switch (iType) {
-      case 0:
-        type = ChatThreadOperation.UnKnown;
-        break;
-      case 1:
-        type = ChatThreadOperation.Create;
-        break;
-      case 2:
-        type = ChatThreadOperation.Update;
-        break;
-      case 3:
-        type = ChatThreadOperation.Delete;
-        break;
-      case 4:
-        type = ChatThreadOperation.Update_Msg;
-        break;
-    }
-
+    ChatThreadOperation type = ChatThreadOperation.values[map["type"]];
     ChatThread? chatThread = map.getValue<ChatThread>(
       "thread",
       callback: (map) {

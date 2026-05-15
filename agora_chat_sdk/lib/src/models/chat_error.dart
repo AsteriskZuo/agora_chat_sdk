@@ -6,7 +6,7 @@
 /// SDK 定义的错误类。
 /// ~end
 class ChatError {
-  ChatError._private(this.code, this.description);
+  ChatError(this.code, this.description);
 
   /// ~english
   /// The error code.
@@ -27,7 +27,7 @@ class ChatError {
   final String description;
 
   factory ChatError.fromJson(Map map) {
-    return ChatError._private(map['code'], map['description']);
+    return ChatError(map['code'], map['description']);
   }
 
   static hasErrorFromResult(Map map) {
@@ -36,12 +36,13 @@ class ChatError {
     } else {
       try {
         throw (ChatError.fromJson(map['error']));
+        // ignore: empty_catches
       } on Exception {}
     }
   }
 
   @override
   String toString() {
-    return "code: " + code.toString() + " desc: " + description;
+    return "code: $code desc: $description";
   }
 }

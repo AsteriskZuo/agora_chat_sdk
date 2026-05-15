@@ -18,7 +18,7 @@ public final class GeneratedPluginRegistrant {
     try {
       flutterEngine.getPlugins().add(new com.easemob.im_flutter_sdk.ImFlutterSdkPlugin());
     } catch (Exception e) {
-      Log.e(TAG, "Error registering plugin agora_chat_sdk, com.easemob.im_flutter_sdk.ImFlutterSdkPlugin", e);
+      Log.e(TAG, "Error registering plugin agora_chat_sdk_android, com.easemob.im_flutter_sdk.ImFlutterSdkPlugin", e);
     }
   }
 }

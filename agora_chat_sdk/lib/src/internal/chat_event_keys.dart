@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 class ChatContactChangeEvent {
   static const String CONTACT_ADD = 'onContactAdded';
   static const String CONTACT_DELETE = 'onContactDeleted';

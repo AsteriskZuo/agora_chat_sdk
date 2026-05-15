@@ -1,4 +1,5 @@
-import '../internal/inner_headers.dart';
+import 'package:agora_chat_sdk/agora_chat_sdk.dart';
+import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
 
 /// ~english
 /// The message Reaction instance class, which has the following attributes:
@@ -58,7 +59,7 @@ class ChatMessageReaction {
   /// ~end
   final List<String> userList;
 
-  ChatMessageReaction._private({
+  ChatMessageReaction({
     required this.reaction,
     required this.userCount,
     required this.isAddedBySelf,
@@ -71,7 +72,7 @@ class ChatMessageReaction {
     bool? isAddedBySelf,
     List<String>? userList,
   }) {
-    return ChatMessageReaction._private(
+    return ChatMessageReaction(
       reaction: reaction ?? this.reaction,
       userCount: userCount ?? this.userCount,
       isAddedBySelf: isAddedBySelf ?? this.isAddedBySelf,
@@ -89,7 +90,7 @@ class ChatMessageReaction {
     if (tmp != null) {
       userList.addAll(tmp);
     }
-    return ChatMessageReaction._private(
+    return ChatMessageReaction(
       reaction: reaction,
       userCount: count,
       isAddedBySelf: isAddedBySelf,
@@ -142,7 +143,7 @@ class ChatMessageReactionEvent {
   /// ~end
   final List<ReactionOperation> operations;
 
-  ChatMessageReactionEvent._private({
+  ChatMessageReactionEvent({
     required this.conversationId,
     required this.messageId,
     required this.reactions,
@@ -150,8 +151,8 @@ class ChatMessageReactionEvent {
   });
 
   factory ChatMessageReactionEvent.fromJson(Map map) {
-    String conversationId = map["conversationId"];
-    String messageId = map["messageId"];
+    String conversationId = map["convId"];
+    String messageId = map["msgId"];
     List<ChatMessageReaction> reactions = [];
     map["reactions"]?.forEach((element) {
       reactions.add(ChatMessageReaction.fromJson(element));
@@ -162,7 +163,7 @@ class ChatMessageReactionEvent {
       operations.add(ReactionOperation.fromJson(e));
     });
 
-    return ChatMessageReactionEvent._private(
+    return ChatMessageReactionEvent(
       conversationId: conversationId,
       messageId: messageId,
       reactions: reactions,

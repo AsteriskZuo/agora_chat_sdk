@@ -10,27 +10,32 @@ import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
 /// ~end
 class ConversationFetchOptions {
   /// ~english
-  /// The constructor of ChatConversationFetchOptions.
-  /// Get marked conversation.
+  /// The constructor of ConversationFetchOptions.
+  /// Gets marked conversations.
   ///
-  /// [mark] The mark type of the conversation.
-  /// [pageSize] The page size of the conversation, when using mark, the value range is [1,10], default is 10.
-  /// [cursor] The cursor of the conversation.
+  /// [mark] The conversation mark.
+  /// [pageSize] The number of conversations to retrieve per page. The value range is [1,50]. If you retrieve marked conversations, the value range is [1,10], with 10 as the default.
+  /// [cursor] The cursor to specify where to start retrieving conversations.
   /// ~end
   ///
   /// ~chinese
-  /// ChatConversationFetchOptions的构造函数。
-  /// 获取标记的会话
+  /// ConversationFetchOptions 的构造函数。
+  /// 获取标记的会话。
   ///
-  /// [mark] 会话标记类型。
-  /// [pageSize] 会话分页大小, 在使用mark时，取值范围为[1,10], 默认为10。
-  /// [cursor] 会话游标。
+  /// [mark] 会话标记。
+  /// [pageSize] 每页查询的会话数量，取值范围为[1,50]。查询标记的会话时，取值范围为 [1,10]，默认为 10。
+  /// [cursor] 查询游标，即会话查询的起始位置。
   /// ~end
   ConversationFetchOptions.mark(
     ConversationMarkType mark, {
     int pageSize = 10,
     String? cursor,
-  }) : this._(mark: mark, pageSize: pageSize, cursor: cursor, pinned: false);
+  }) : this._(
+          mark: mark,
+          pageSize: pageSize,
+          cursor: cursor,
+          pinned: false,
+        );
 
   ConversationFetchOptions._({
     this.mark,
@@ -46,74 +51,92 @@ class ConversationFetchOptions {
   }
 
   /// ~english
-  /// The constructor of ChatConversationFetchOptions.
-  /// [pageSize] The page size of the conversation, when using page, the value range is [1,50], default is 20.
-  /// [cursor] The cursor of the conversation.
+  /// The constructor of ConversationFetchOptions.
+  /// [pageSize] The number of conversations to retrieve per page. The value range is [1,50], with 20 as the default.
+  /// [cursor] The cursor to specify where to start retrieving conversations.
   /// ~end
   ///
   /// ~chinese
-  /// ChatConversationFetchOptions的构造函数。
-  /// [pageSize] 会话分页大小, 取值范围为[1,50], 默认为20。
-  /// [cursor] 会话游标。
+  /// ConversationFetchOptions 的构造函数。
+  /// [pageSize] 每页查询的会话数量, 取值范围为[1,50], 默认为 20。
+  /// [cursor] 查询游标，即会话查询的起始位置。
   /// ~end
-  ConversationFetchOptions({int pageSize = 20, String? cursor})
-    : this._(mark: null, pageSize: pageSize, cursor: cursor, pinned: false);
+  ConversationFetchOptions({
+    int pageSize = 20,
+    String? cursor,
+  }) : this._(
+          mark: null,
+          pageSize: pageSize,
+          cursor: cursor,
+          pinned: false,
+        );
 
   /// ~english
-  /// The constructor of ChatConversationFetchOptions.
-  /// Get pinned conversation.
+  /// The constructor of ConversationFetchOptions.
+  /// Gets pinned conversations.
   ///
-  /// [pageSize] The page size of the conversation, when using page, the value range is [1,50], default is 20.
-  /// [cursor] The cursor of the conversation.
+  /// [pageSize] The number of conversations to retrieve per page. The value range is [1,50], with 20 as the default.
+  /// [cursor] The cursor to specify where to start retrieving conversations.
   /// ~end
   ///
   /// ~chinese
-  /// ChatConversationFetchOptions的构造函数。
+  /// ConversationFetchOptions 的构造函数。
   /// 获取置顶会话。
   ///
-  /// [pageSize] 会话分页大小, 取值范围为[1,50], 默认为20。
-  /// [cursor] 会话游标。
+  /// [pageSize] 每页查询的会话数量, 取值范围为[1,50], 默认为 20。
+  /// [cursor] 查询游标，即会话查询的起始位置。
   /// ~end
-  ConversationFetchOptions.pinned({int pageSize = 20, String? cursor})
-    : this._(mark: null, pageSize: pageSize, cursor: cursor, pinned: true);
+  ConversationFetchOptions.pinned({
+    int pageSize = 20,
+    String? cursor,
+  }) : this._(
+          mark: null,
+          pageSize: pageSize,
+          cursor: cursor,
+          pinned: true,
+        );
 
   /// ~english
-  /// The mark type of the conversation.
+  /// The conversation mark.
   /// ~end
   /// ~chinese
-  /// 会话标记类型。
+  /// 会话标记。
   /// ~end
   final ConversationMarkType? mark;
 
   /// ~english
-  /// The page size of the conversation, when using mark, the value range is [1,10], default is 10. Otherwise, the value range is [1,50].
+  /// The number of conversations to retrieve per page. The value range is [1,10], with 10 as the default.
   /// ~end
   /// ~chinese
-  /// 会话分页大小, 在使用mark时，取值范围为[1,10], 默认为10。否则，取值范围为[1,50], 默认为20。
+  /// 每页查询的会话数量, 取值范围为[1,10], 默认为 10。
   /// ~end
   final int pageSize;
 
   /// ~english
-  /// The cursor of the conversation.
+  /// The cursor to specify where to start retrieving conversations.
   /// ~end
   /// ~chinese
-  /// 会话游标。
+  /// 查询游标，即会话查询的起始位置。
   /// ~end
   final String? cursor;
 
   /// ~english
-  /// Whether to get pinned conversation.
+  /// Whether to get pinned conversation:
+  /// - `true`: Yes.
+  /// - `false`: No.
   /// ~end
   /// ~chinese
   /// 是否获取置顶会话。
+  /// - `true`：是。
+  /// - `false`：否。
   /// ~end
   final bool pinned;
 
   Map toJson() {
-    Map data = Map();
+    Map data = {};
     data.putIfNotNull("mark", mark?.index);
     data.putIfNotNull("pageSize", pageSize);
-    data.putIfNotNull('cursor', cursor);
+    data.putIfNotNull('cursor', cursor ?? "");
     data.putIfNotNull('pinned', pinned);
     return data;
   }

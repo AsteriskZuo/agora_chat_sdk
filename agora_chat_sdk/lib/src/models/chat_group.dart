@@ -1,4 +1,5 @@
-import '../internal/inner_headers.dart';
+import 'package:agora_chat_sdk/agora_chat_sdk.dart';
+import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
 
 /// ~english
 /// The ChatGroup class, which contains the information of the chat group.
@@ -11,10 +12,13 @@ import '../internal/inner_headers.dart';
 /// 如需最新数据，需先从服务器获取：[ChatGroupManager.fetchGroupInfoFromServer]。
 /// ~end
 class ChatGroup {
-  ChatGroup._private({
+  ChatGroup({
     required this.groupId,
-    this.name,
-    this.description,
+    @Deprecated('Use [groupName] instead') this.name,
+    this.groupName,
+    this.avatarUrl,
+    @Deprecated('Use [desc] instead') this.description,
+    this.desc,
     this.owner,
     this.announcement,
     this.memberCount,
@@ -41,6 +45,8 @@ class ChatGroup {
   /// ~end
   final String groupId;
 
+  @Deprecated('Use [desc] instead')
+
   /// ~english
   /// Gets the group name.
   ///
@@ -59,6 +65,34 @@ class ChatGroup {
   final String? name;
 
   /// ~english
+  /// Gets the group name.
+  ///
+  /// **Note**
+  /// To get the correct value, ensure that you call [ChatGroupManager.fetchGroupInfoFromServer] before calling this method.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 从内存中获取群组名称。
+  ///
+  /// **Note**
+  /// 如需最新数据，需先从服务器获取：[ChatGroupManager.fetchGroupInfoFromServer]。
+  ///
+  /// **Return** 群组名称。
+  /// ~end
+  final String? groupName;
+
+  /// ~english
+  /// Gets the group avatar.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 从内存中获取群组头像。
+  /// ~end
+  final String? avatarUrl;
+
+  @Deprecated('Use [desc] instead')
+
+  /// ~english
   /// Gets the group description.
   ///
   /// **Note**
@@ -74,6 +108,23 @@ class ChatGroup {
   /// **Return** 群组描述。
   /// ~end
   final String? description;
+
+  /// ~english
+  /// Gets the group description.
+  ///
+  /// **Note**
+  /// To get the correct value, ensure that you call [ChatGroupManager.fetchGroupInfoFromServer] before calling this method.
+  /// ~end
+  ///
+  /// ~chinese
+  /// 从内存中获取群组描述。
+  ///
+  /// **Note**
+  /// 如需最新数据，需先从服务器获取：[ChatGroupManager.fetchGroupInfoFromServer]。
+  ///
+  /// **Return** 群组描述。
+  /// ~end
+  final String? desc;
 
   /// ~english
   /// Gets the user ID of the group owner.
@@ -341,13 +392,13 @@ class ChatGroup {
   final bool isDisabled;
 
   @Deprecated(
-    "Switch to using isMemberOnly | isMemberAllowToInvite | maxUserCount to instead",
-  )
+      "Switch to using isMemberOnly | isMemberAllowToInvite | maxUserCount to instead")
   ChatGroupOptions? get settings => _options;
 
   factory ChatGroup.fromJson(Map map) {
     String groupId = map['groupId'];
     String? name = map["name"];
+    String? avatarUrl = map["avatarUrl"];
     String? description = map["desc"];
     String? owner = map["owner"];
     String? announcement = map["announcement"];
@@ -358,19 +409,23 @@ class ChatGroup {
     List<String>? muteList = map.getList("muteList");
     bool? messageBlocked = map["messageBlocked"];
     bool? isAllMemberMuted = map["isAllMemberMuted"];
-    ChatGroupPermissionType? permissionType = permissionTypeFromInt(
-      map['permissionType'],
-    );
+    ChatGroupPermissionType? permissionType =
+        ChatGroupPermissionTypeExtension.values(map['permissionType']);
     int? maxUserCount = map["maxUserCount"];
     bool? isMemberOnly = map["isMemberOnly"];
     bool? isMemberAllowToInvite = map["isMemberAllowToInvite"];
     bool? isDisabled = map["isDisabled"];
     String? extension = map["ext"];
 
-    return ChatGroup._private(
+    return ChatGroup(
       groupId: groupId,
+      avatarUrl: avatarUrl,
+      // ignore: deprecated_member_use_from_same_package
       name: name,
+      groupName: name,
+      // ignore: deprecated_member_use_from_same_package
       description: description,
+      desc: description,
       owner: owner,
       announcement: announcement,
       memberCount: memberCount,
@@ -390,10 +445,13 @@ class ChatGroup {
   }
 
   Map toJson() {
-    Map data = Map();
+    Map data = {};
     data.putIfNotNull("groupId", groupId);
-    data.putIfNotNull("name", name);
-    data.putIfNotNull("desc", description);
+    // ignore: deprecated_member_use_from_same_package
+    data.putIfNotNull("name", groupName ?? name);
+    data.putIfNotNull("avatarUrl", avatarUrl);
+    // ignore: deprecated_member_use_from_same_package
+    data.putIfNotNull("desc", desc ?? description);
     data.putIfNotNull("owner", owner);
     data.putIfNotNull("announcement", announcement);
     data.putIfNotNull("memberCount", memberCount);
@@ -405,13 +463,16 @@ class ChatGroup {
     data.putIfNotNull("isDisabled", isDisabled);
     data.putIfNotNull("isAllMemberMuted", isAllMemberMuted);
     data.putIfNotNull("options", _options?.toJson());
-    data.putIfNotNull("permissionType", permissionTypeToInt(permissionType));
+    if (permissionType?.index != null) {
+      data.putIfNotNull("permissionType", (permissionType!.index - 1));
+    }
+
     return data;
   }
 
   @override
   String toString() {
-    return this.toJson().toString();
+    return toJson().toString();
   }
 }
 
@@ -438,11 +499,17 @@ class ChatGroupInfo {
   /// ~end
   final String? name;
 
-  ChatGroupInfo._private({required this.groupId, required this.name});
+  ChatGroupInfo._private({
+    required this.groupId,
+    required this.name,
+  });
 
   factory ChatGroupInfo.fromJson(Map map) {
     String groupId = map["groupId"];
     String? groupName = map["name"];
-    return ChatGroupInfo._private(groupId: groupId, name: groupName);
+    return ChatGroupInfo._private(
+      groupId: groupId,
+      name: groupName,
+    );
   }
 }

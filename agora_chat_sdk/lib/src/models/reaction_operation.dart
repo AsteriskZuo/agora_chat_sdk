@@ -27,7 +27,11 @@ class ReactionOperation {
   ///
   /// Param [operate] 具体 Reaction 操作类型。
   /// ~end
-  const ReactionOperation._private(this.userId, this.reaction, this.operate);
+  const ReactionOperation(
+    this.userId,
+    this.reaction,
+    this.operate,
+  );
 
   /// ~english
   /// The user ID of the operator.
@@ -60,10 +64,7 @@ class ReactionOperation {
     String userId = map["userId"];
     String reaction = map["reaction"];
 
-    ReactionOperate operate = (map["operate"] ?? 0) == 0
-        ? ReactionOperate.Remove
-        : ReactionOperate.Add;
-
-    return ReactionOperation._private(userId, reaction, operate);
+    ReactionOperate operate = ReactionOperate.values[map["operate"]];
+    return ReactionOperation(userId, reaction, operate);
   }
 }

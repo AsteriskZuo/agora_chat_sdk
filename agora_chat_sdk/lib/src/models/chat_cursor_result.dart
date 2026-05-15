@@ -25,20 +25,18 @@ typedef CursorResultCallback = Object Function(dynamic obj);
 ///   ```
 /// ~end
 class ChatCursorResult<T> {
-  ChatCursorResult._private(this.cursor, this.data);
+  ChatCursorResult(
+    this.cursor,
+    this.data,
+  );
 
-  factory ChatCursorResult.fromJson(
-    Map<String, dynamic> map, {
-    dataItemCallback = CursorResultCallback,
-  }) {
+  factory ChatCursorResult.fromJson(Map<String, dynamic> map,
+      {dataItemCallback = CursorResultCallback}) {
     List<T> list = [];
-    (map['list'] as List).forEach(
-      (element) => list.add(dataItemCallback(element)),
-    );
-    ChatCursorResult<T> result = ChatCursorResult<T>._private(
-      map['cursor'],
-      list,
-    );
+    for (var element in (map['list'] as List)) {
+      list.add(dataItemCallback(element));
+    }
+    ChatCursorResult<T> result = ChatCursorResult<T>(map['cursor'], list);
 
     return result;
   }

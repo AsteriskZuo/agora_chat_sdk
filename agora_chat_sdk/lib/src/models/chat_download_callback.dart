@@ -1,4 +1,4 @@
-import '../internal/inner_headers.dart';
+import 'package:agora_chat_sdk/agora_chat_sdk.dart';
 
 /// ~english
 /// The group shared download callback.
@@ -42,5 +42,9 @@ class ChatDownloadCallback {
   /// ~chinese
   /// 创建文件下载对象。
   /// ~end
-  ChatDownloadCallback({this.onSuccess, this.onError, this.onProgress});
+  ChatDownloadCallback({
+    this.onSuccess,
+    this.onError,
+    this.onProgress,
+  });
 }

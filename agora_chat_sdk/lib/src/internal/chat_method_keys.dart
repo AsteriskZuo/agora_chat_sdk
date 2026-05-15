@@ -17,6 +17,7 @@ class ChatMethodKeys {
 
   static const String getToken = "getToken";
   static const String getCurrentUser = "getCurrentUser";
+  static const String getCurrentDeviceId = "getCurrentDeviceId";
   static const String isLoggedInBefore = "isLoggedInBefore";
   static const String isConnected = "isConnected";
 
@@ -172,8 +173,7 @@ class ChatMethodKeys {
   static const String loadMsgWithMsgType = "loadMsgWithMsgType";
   static const String loadMsgWithTime = "loadMsgWithTime";
   static const String messageCount = "messageCount";
-  static const String removeMsgFromServerWithMsgList =
-      "removeMsgFromServerWithMsgList";
+
   static const String removeMsgFromServerWithTimeStamp =
       "removeMsgFromServerWithTimeStamp";
 
@@ -377,7 +377,67 @@ class ChatMethodKeys {
   static const String unpinMessage = 'unpinMessage';
   static const String fetchPinnedMessages = 'fetchPinnedMessages';
 
-  // 1.3.2
+  // 460
+  static const String onMessagesRecalledInfo = 'onMessagesRecalledInfo';
+
+  // 481
+  static const String conversationRemindType = 'conversationRemindType';
+  static const String conversationSearchMsgsByOptions =
+      'conversationSearchMsgsByOptions';
+  static const String conversationGetLocalMessageCount =
+      'conversationGetLocalMessageCount';
+  static const String conversationDeleteServerMessageWithIds =
+      'conversationDeleteServerMessageWithIds';
+  static const String conversationDeleteServerMessageWithTime =
+      'conversationDeleteServerMessageWithTime';
+
+  static const String searchMsgsByOptions = 'searchMsgsByOptions';
+  static const String syncSilentModels = 'syncSilentModels';
+  static const String clearAllGroupsFromDB = 'clearAllGroupsFromDB';
+  static const String updateUsingHttpsOnlySetting =
+      'updateUsingHttpsOnlySetting';
+  static const String updateLoginExtensionInfo = 'updateLoginExtensionInfo';
+  static const String updateDeleteMessagesWhenLeaveGroupSetting =
+      'updateDeleteMessagesWhenLeaveGroupSetting';
+  static const String updateDeleteMessageWhenLeaveRoomSetting =
+      'updateDeleteMessageWhenLeaveRoomSetting';
+  static const String updateRoomOwnerCanLeaveSetting =
+      'updateRoomOwnerCanLeaveSetting';
+  static const String updateAutoAcceptGroupInvitationSetting =
+      'updateAutoAcceptGroupInvitationSetting';
+  static const String updateAcceptInvitationAlways = 'acceptInvitationAlways';
+  static const String updateAutoDownloadAttachmentThumbnailSetting =
+      'updateAutoDownloadAttachmentThumbnailSetting';
+  static const String updateRequireAckSetting = 'updateRequireAckSetting';
+  static const String updateDeliveryAckSetting = 'updateDeliveryAckSetting';
+  static const String updateSortMessageByServerTimeSetting =
+      'updateSortMessageByServerTimeSetting';
+  static const String updateMessagesReceiveCallbackIncludeSendSetting =
+      'updateMessagesReceiveCallbackIncludeSendSetting';
+  static const String updateRegradeMessagesSetting =
+      'updateRegradeMessagesSetting';
+
+  static const String bindDeviceToken = 'bindDeviceToken';
+
+  // 4.10
+  static const String onOfflineMessageSyncStart = 'onOfflineMessageSyncStart';
+  static const String onOfflineMessageSyncFinish = 'onOfflineMessageSyncFinish';
+  static const String getMessageCount = 'getMessageCount';
   static const String isMemberInGroupMuteList = 'isMemberInGroupMuteList';
+
+  // shenwang
+  static const String changeAppId = 'changeAppId';
+
+  // 4.12.1
   static const String isMemberInChatRoomMuteList = "isMemberInChatRoomMuteList";
+
+  // 4.14.0
+  static const String fetchGroupMembersInfo = "fetchGroupMembersInfo";
+
+  static const String updateGroupAvatar = "updateGroupAvatar";
+
+  // 4.15.2
+  static const String loadConversationMessagesWithKeyword =
+      "loadConversationMessagesWithKeyword";
+  static const String loadMessagesWithIds = "loadMessagesWithIds";
 }

@@ -51,7 +51,7 @@ class ChatPresence {
   /// ~end
   Map<String, int>? statusDetails;
 
-  ChatPresence._private(
+  ChatPresence(
     this.publisher,
     this.statusDescription,
     this.statusDetails,
@@ -65,13 +65,8 @@ class ChatPresence {
     int latestTime = map["lastTime"] ?? 0;
     int expiryTime = map["expiryTime"] ?? 0;
     Map<String, int>? statusDetails = map["statusDetails"]?.cast<String, int>();
-    return ChatPresence._private(
-      publisher,
-      statusDescription,
-      statusDetails,
-      latestTime,
-      expiryTime,
-    );
+    return ChatPresence(
+        publisher, statusDescription, statusDetails, latestTime, expiryTime);
   }
 }
 
@@ -101,7 +96,10 @@ class ChatPresenceStatusDetail {
   /// ~end
   final int status;
 
-  ChatPresenceStatusDetail._private(this.device, this.status);
+  ChatPresenceStatusDetail._private(
+    this.device,
+    this.status,
+  );
 
   factory ChatPresenceStatusDetail.fromJson(Map map) {
     String device = map["device"];

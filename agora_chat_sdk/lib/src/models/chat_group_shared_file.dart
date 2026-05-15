@@ -1,4 +1,4 @@
-import '../internal/inner_headers.dart';
+import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
 
 /// ~english
 /// The ChatGroupSharedFile class, which manages the chat group shared files.
@@ -93,7 +93,7 @@ class ChatGroupSharedFile {
   }
 
   Map toJson() {
-    Map data = Map();
+    Map data = {};
     data.putIfNotNull("fileId", _fileId);
     data.putIfNotNull("name", _fileName);
     data.putIfNotNull("owner", _fileOwner);

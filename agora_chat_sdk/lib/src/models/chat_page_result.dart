@@ -15,19 +15,19 @@ typedef PageResultCallback = Object Function(dynamic obj);
 /// Param [T] 泛型类型 T。
 /// ~end
 class ChatPageResult<T> {
-  ChatPageResult._private();
+  ChatPageResult();
 
-  factory ChatPageResult.fromJson(
-    Map map, {
-    dataItemCallback = PageResultCallback,
-  }) {
-    ChatPageResult<T> result = ChatPageResult<T>._private();
-    result.._pageCount = map['count'];
-    result.._data = [];
+  factory ChatPageResult.fromJson(Map map,
+      {dataItemCallback = PageResultCallback}) {
+    ChatPageResult<T> result = ChatPageResult<T>();
+    result._pageCount = map['count'];
+    result._data = [];
 
-    (map['list'] as List).forEach(
-      (element) => result._data.add(dataItemCallback(element)),
-    );
+    for (var element in (map['list'] as List)) {
+      result._data.add(
+        dataItemCallback(element),
+      );
+    }
 
     return result;
   }
@@ -51,5 +51,5 @@ class ChatPageResult<T> {
   /// ~chinese
   /// 获取 <T> 泛型数据。
   /// ~end
-  List<T>? get data => _data;
+  List<T> get data => _data;
 }

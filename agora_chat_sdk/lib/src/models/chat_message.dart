@@ -2,10 +2,9 @@
 
 import 'dart:math';
 
-import 'package:flutter/services.dart';
 import 'package:agora_chat_sdk/agora_chat_sdk.dart';
-
-import '../internal/inner_headers.dart';
+import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
+import 'package:agora_chat_sdk_interface/agora_chat_sdk_interface.dart' as platform_interface;
 
 /// ~english
 /// The message class.
@@ -35,8 +34,7 @@ import '../internal/inner_headers.dart';
 class ChatMessage {
   /// 消息 ID。
   String? _msgId;
-  String _msgLocalId =
-      DateTime.now().millisecondsSinceEpoch.toString() +
+  final String _msgLocalId = DateTime.now().millisecondsSinceEpoch.toString() +
       Random().nextInt(99999).toString();
 
   /// ~english
@@ -64,20 +62,20 @@ class ChatMessage {
   /// ~end
   ///
   /// ~chinese
-  /// 消息发送方ID
+  /// 消息发送方的用户 ID。
   /// ~end
   String? from = '';
 
   /// ~english
-  /// The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// The message recipient.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   /// ~end
   ///
   /// ~chinese
   /// 消息接收方，可以是：
-  /// - 用户：用户 ID；
+  /// - 单聊：用户 ID；
   /// - 群组：群组 ID；
   /// - 聊天室：聊天室 ID。
   /// ~end
@@ -102,8 +100,6 @@ class ChatMessage {
   int serverTime = DateTime.now().millisecondsSinceEpoch;
 
   /// ~english
-  /// The delivery receipt, which is to check whether the other party has received the message.
-  ///
   ///  Whether the recipient has received the message.
   /// - `true`: Yes.
   /// - `false`: No.
@@ -111,7 +107,6 @@ class ChatMessage {
   ///
   /// ~chinese
   /// 设置送达回执，即接收方是否已收到消息。
-  ///
   /// - `true`：是；
   /// - `false`：否。
   /// ~end
@@ -132,7 +127,6 @@ class ChatMessage {
 
   /// ~english
   /// Whether read receipts are required for group messages.
-  ///
   /// - `true`: Yes.
   /// - `false`: No.
   ///
@@ -140,18 +134,21 @@ class ChatMessage {
   ///
   /// ~chinese
   /// 设置是否需要群组已读回执。
-  ///
   /// - `true`：是；
   /// - `false`：否。
   /// ~end
   bool needGroupAck = false;
 
   /// ~english
-  /// Is it a message sent within a thread
+  /// Whether the message is sent within a chat thread.
+  /// - `true`: Yes.
+  /// - `false`: No.
   /// ~end
   ///
   /// ~chinese
   /// 是否为子区中的消息。
+  /// - `true`：是；
+  /// - `false`：否。
   /// ~end
   bool isChatThreadMessage = false;
 
@@ -170,7 +167,7 @@ class ChatMessage {
   bool hasRead = false;
 
   /// ~english
-  /// The enumeration of the chat type.
+  /// The enumeration of chat types.
   ///
   /// There are three chat types: one-to-one chat, group chat, and chat room.
   /// ~end
@@ -183,7 +180,7 @@ class ChatMessage {
   ChatType chatType = ChatType.Chat;
 
   /// ~english
-  /// The message direction. see [MessageDirection].
+  /// The message direction. See [MessageDirection].
   /// ~end
   ///
   /// ~chinese
@@ -192,7 +189,7 @@ class ChatMessage {
   MessageDirection direction = MessageDirection.SEND;
 
   /// ~english
-  /// Gets the message sending/reception status. see [MessageStatus].
+  /// The message sending/reception status. See [MessageStatus].
   /// ~end
   ///
   /// ~chinese
@@ -213,14 +210,14 @@ class ChatMessage {
   /// Whether the message is delivered only when the recipient(s) is/are online:
   ///
   /// - `true`：The message is delivered only when the recipient(s) is/are online. If the recipient is offline, the message is discarded.
-  /// - `false` (Default) ：The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
+  /// - (Default) `false` ：The message is delivered when the recipient(s) is/are online. If the recipient(s) is/are offline, the message will not be delivered to them until they get online.
   /// ~end
   ///
   /// ~chinese
   /// 消息是否只投递给在线用户：
   ///
   /// - `true`：只有消息接收方在线时才能投递成功。若接收方离线，则消息会被丢弃。
-  /// - `false`（默认）：如果用户在线，则直接投递；如果用户离线，消息会在用户上线时投递。
+  /// - （默认）`false`：如果用户在线，则直接投递；如果用户离线，消息会在用户上线时投递。
   /// ~end
   bool deliverOnlineOnly = false;
 
@@ -233,12 +230,12 @@ class ChatMessage {
   /// ~chinese
   /// 定向消息的接收方。
   ///
-  /// 该属性仅对群组和聊天室中的消息有效，则消息发送给群组或聊天室的所有成员。
+  /// 该属性仅对群组聊天和聊天室中的消息有效。
   /// ~end
   List<String>? receiverList;
 
   /// ~english
-  /// Message body. We recommend you use [ChatMessageBody].
+  /// Message body. See [ChatMessageBody].
   /// ~end
   ///
   /// ~chinese
@@ -247,24 +244,26 @@ class ChatMessage {
   late ChatMessageBody body;
 
   /// ~english
-  /// Message Online Status
+  /// Whether the message gets delivered to an online user.
   ///
-  /// Local database does not store. The default value for reading or pulling roaming messages from the database is YES
+  /// This field is issued by the server to indicate whether the recipient is online when the message is delivered.
+  ///
+  /// This field is not stored in the local database. The value of this field is `true` by default for messages read from the database or pulled from the server.
   /// ~end
   ///
   /// ~chinese
-  /// 消息在线状态
+  /// 该字段标记服务器下发消息时判断用户是在线还是离线的状态。
   ///
-  /// 本地数据库不存储。从数据库读取或提取漫游消息的默认值是true。
+  /// 该字段为服务器下发字段，不在本地数据库中存储。对于从数据库读取的消息或拉取的漫游消息，该字段的值默认为 `true`。
   /// ~end
   late final bool onlineState;
 
   /// ~english
-  ///  Whether it is a global broadcast message
+  ///  Whether it is a global broadcast message for all chat rooms in an app.
   /// ~end
   ///
   /// ~chinese
-  /// 是否是全局广播消息
+  /// 是否是聊天室全局广播消息。
   /// ~end
   late final bool isBroadcast;
 
@@ -283,17 +282,15 @@ class ChatMessage {
       return null;
     }
     Map req = {"msgId": msgId};
-    Map result = await _emMessageChannel.invokeMethod(
+    Map result = await platform_interface.Client.instance.messageManager.callNativeMethod(
       ChatMethodKeys.getPinInfo,
       req,
     );
     try {
       ChatError.hasErrorFromResult(result);
       if (result.containsKey(ChatMethodKeys.getPinInfo)) {
-        return result.getValue<MessagePinInfo>(
-          ChatMethodKeys.getPinInfo,
-          callback: (obj) => MessagePinInfo.fromJson(obj),
-        );
+        return result.getValue<MessagePinInfo>(ChatMethodKeys.getPinInfo,
+            callback: (obj) => MessagePinInfo.fromJson(obj));
       } else {
         return null;
       }
@@ -322,7 +319,7 @@ class ChatMessage {
   ///
   /// Param [body] The message body.
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -340,8 +337,8 @@ class ChatMessage {
     required this.body,
     this.chatType = ChatType.Chat,
   }) {
-    this.onlineState = true;
-    this.direction = MessageDirection.RECEIVE;
+    onlineState = true;
+    direction = MessageDirection.RECEIVE;
   }
 
   /// ~english
@@ -350,11 +347,11 @@ class ChatMessage {
   /// Param [body] The message body.
   ///
   /// Param [to] The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -377,11 +374,11 @@ class ChatMessage {
     required this.body,
     this.to,
     this.chatType = ChatType.Chat,
-  }) : this.from = ChatClient.getInstance.currentUserId,
-       this.conversationId = to {
-    this.hasRead = true;
-    this.direction = MessageDirection.SEND;
-    this.onlineState = true;
+  })  : from = ChatClient.getInstance.currentUserId,
+        conversationId = to {
+    hasRead = true;
+    direction = MessageDirection.SEND;
+    onlineState = true;
   }
 
   void dispose() {}
@@ -390,7 +387,7 @@ class ChatMessage {
   /// Creates a text message for sending.
   ///
   /// Param [targetId] The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   ///
@@ -398,7 +395,7 @@ class ChatMessage {
   ///
   /// Param [targetLanguages] Target languages.
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -425,19 +422,19 @@ class ChatMessage {
     List<String>? targetLanguages,
     ChatType chatType = ChatType.Chat,
   }) : this.createSendMessage(
-         chatType: chatType,
-         to: targetId,
-         body: ChatTextMessageBody(
-           content: content,
-           targetLanguages: targetLanguages,
-         ),
-       );
+          chatType: chatType,
+          to: targetId,
+          body: ChatTextMessageBody(
+            content: content,
+            targetLanguages: targetLanguages,
+          ),
+        );
 
   /// ~english
   /// Creates a file message for sending.
   ///
   /// Param [targetId] The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   ///
@@ -447,7 +444,7 @@ class ChatMessage {
   ///
   /// Param [fileSize] The file size in bytes.
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -477,20 +474,19 @@ class ChatMessage {
     int? fileSize,
     ChatType chatType = ChatType.Chat,
   }) : this.createSendMessage(
-         chatType: chatType,
-         to: targetId,
-         body: ChatFileMessageBody(
-           localPath: filePath,
-           fileSize: fileSize,
-           displayName: displayName,
-         ),
-       );
+            chatType: chatType,
+            to: targetId,
+            body: ChatFileMessageBody(
+              localPath: filePath,
+              fileSize: fileSize,
+              displayName: displayName,
+            ));
 
   /// ~english
   /// Creates an image message for sending.
   ///
   /// Param [targetId] The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   ///
@@ -502,7 +498,7 @@ class ChatMessage {
   ///
   /// Param [sendOriginalImage] Whether to send the original image.
   /// - `true`: Yes.
-  /// - `false`: (default) No. For an image greater than 100 KB, the SDK will compress it and send the thumbnail.
+  /// - (Default) `false`: No. For an image greater than 100 KB, the SDK will compress it and send the thumbnail.
   ///
   /// Param [fileSize] The image file size in bytes.
   ///
@@ -510,7 +506,7 @@ class ChatMessage {
   ///
   /// Param [height] The image height in pixels.
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -531,7 +527,7 @@ class ChatMessage {
   ///
   /// Param [sendOriginalImage] 是否发送原图。
   /// - `true`: 是。
-  /// - `false`: (default) 否。默认大于 100 kb 的图片会自动压缩发送缩略图。
+  /// - （默认）`false`: 否。默认大于 100 KB 的图片会自动压缩发送缩略图。
   ///
   /// Param [fileSize] 图片文件大小，单位是字节。
   ///
@@ -541,7 +537,7 @@ class ChatMessage {
   ///
   /// Param [chatType] 聊天类型, 默认为单聊，如果是群聊或者聊天室，可以参考[ChatType]。
   ///
-  /// **Return** 图片实例。
+  /// **Return** 消息体实例。
   /// ~end
   ChatMessage.createImageSendMessage({
     required String targetId,
@@ -549,28 +545,29 @@ class ChatMessage {
     String? displayName,
     String? thumbnailLocalPath,
     bool sendOriginalImage = false,
+    bool isGif = false,
     int? fileSize,
     double? width,
     double? height,
     ChatType chatType = ChatType.Chat,
   }) : this.createSendMessage(
-         chatType: chatType,
-         to: targetId,
-         body: ChatImageMessageBody(
-           localPath: filePath,
-           displayName: displayName,
-           thumbnailLocalPath: thumbnailLocalPath,
-           sendOriginalImage: sendOriginalImage,
-           width: width,
-           height: height,
-         ),
-       );
+            chatType: chatType,
+            to: targetId,
+            body: ChatImageMessageBody(
+              localPath: filePath,
+              displayName: displayName,
+              thumbnailLocalPath: thumbnailLocalPath,
+              sendOriginalImage: sendOriginalImage,
+              width: width,
+              height: height,
+              isGif: isGif,
+            ));
 
   /// ~english
   /// Creates a video message instance for sending.
   ///
   /// Param [targetId] The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   ///
@@ -588,7 +585,7 @@ class ChatMessage {
   ///
   /// Param [height] The height of the video thumbnail, in pixels.
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -630,24 +627,23 @@ class ChatMessage {
     double? height,
     ChatType chatType = ChatType.Chat,
   }) : this.createSendMessage(
-         chatType: chatType,
-         to: targetId,
-         body: ChatVideoMessageBody(
-           localPath: filePath,
-           displayName: displayName,
-           duration: duration,
-           fileSize: fileSize,
-           thumbnailLocalPath: thumbnailLocalPath,
-           width: width,
-           height: height,
-         ),
-       );
+            chatType: chatType,
+            to: targetId,
+            body: ChatVideoMessageBody(
+              localPath: filePath,
+              displayName: displayName,
+              duration: duration,
+              fileSize: fileSize,
+              thumbnailLocalPath: thumbnailLocalPath,
+              width: width,
+              height: height,
+            ));
 
   /// ~english
   /// Creates a voice message for sending.
   ///
   /// Param [targetId] The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   ///
@@ -659,7 +655,7 @@ class ChatMessage {
   ///
   /// Param [displayName] The name of the voice file which ends with a suffix that indicates the format of the file. For example "voice.mp3".
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -692,21 +688,19 @@ class ChatMessage {
     String? displayName,
     ChatType chatType = ChatType.Chat,
   }) : this.createSendMessage(
-         chatType: chatType,
-         to: targetId,
-         body: ChatVoiceMessageBody(
-           localPath: filePath,
-           duration: duration,
-           fileSize: fileSize,
-           displayName: displayName,
-         ),
-       );
+            chatType: chatType,
+            to: targetId,
+            body: ChatVoiceMessageBody(
+                localPath: filePath,
+                duration: duration,
+                fileSize: fileSize,
+                displayName: displayName));
 
   /// ~english
   /// Creates a location message for sending.
   ///
   /// Param [targetId] The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   ///
@@ -718,7 +712,7 @@ class ChatMessage {
   ///
   /// Param [buildingName] The building name.
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -751,21 +745,20 @@ class ChatMessage {
     String? buildingName,
     ChatType chatType = ChatType.Chat,
   }) : this.createSendMessage(
-         chatType: chatType,
-         to: targetId,
-         body: ChatLocationMessageBody(
-           latitude: latitude,
-           longitude: longitude,
-           address: address,
-           buildingName: buildingName,
-         ),
-       );
+            chatType: chatType,
+            to: targetId,
+            body: ChatLocationMessageBody(
+              latitude: latitude,
+              longitude: longitude,
+              address: address,
+              buildingName: buildingName,
+            ));
 
   /// ~english
   /// Creates a command message for sending.
   ///
   /// Param [targetId] The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   ///
@@ -773,7 +766,7 @@ class ChatMessage {
   ///
   /// Param [deliverOnlineOnly] Whether to send only to online users.
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -800,19 +793,16 @@ class ChatMessage {
     bool deliverOnlineOnly = false,
     ChatType chatType = ChatType.Chat,
   }) : this.createSendMessage(
-         chatType: chatType,
-         to: targetId,
-         body: ChatCmdMessageBody(
-           action: action,
-           deliverOnlineOnly: deliverOnlineOnly,
-         ),
-       );
+            chatType: chatType,
+            to: targetId,
+            body: ChatCmdMessageBody(
+                action: action, deliverOnlineOnly: deliverOnlineOnly));
 
   /// ~english
   /// Creates a custom message for sending.
   ///
   /// Param [targetId] The ID of the message recipient.
-  /// - For a one-to-one chat, it is the username of the peer user.
+  /// - For a one-to-one chat, it is the user ID of the peer user.
   /// - For a group chat, it is the group ID.
   /// - For a chat room, it is the chat room ID.
   ///
@@ -820,7 +810,7 @@ class ChatMessage {
   ///
   /// Param [params] The params map.
   ///
-  /// Param [chatType] The chat type, default is single chat, if it is group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -843,14 +833,13 @@ class ChatMessage {
   /// ~end
   ChatMessage.createCustomSendMessage({
     required String targetId,
-    required event,
+    required String event,
     Map<String, String>? params,
     ChatType chatType = ChatType.Chat,
   }) : this.createSendMessage(
-         chatType: chatType,
-         to: targetId,
-         body: ChatCustomMessageBody(event: event, params: params),
-       );
+            chatType: chatType,
+            to: targetId,
+            body: ChatCustomMessageBody(event: event, params: params));
 
   /// ~english
   /// Creates a combined message for sending.
@@ -868,7 +857,7 @@ class ChatMessage {
   ///
   /// Param [msgIds] The list of original messages included in the combined message.
   ///
-  /// Param [chatType] The chat type, which is one-to-one chat by default. For group chat or chat room, see [ChatType].
+  /// Param [chatType] The chat type. The default chat type is one-to-one chat. For the group chat or chat room, see [ChatType].
   ///
   /// **Return** The message instance.
   /// ~end
@@ -901,36 +890,32 @@ class ChatMessage {
     required List<String> msgIds,
     ChatType chatType = ChatType.Chat,
   }) : this.createSendMessage(
-         chatType: chatType,
-         to: targetId,
-         body: CombineMessageBody(
-           title: title,
-           summary: summary,
-           compatibleText: compatibleText,
-           messageList: msgIds,
-         ),
-       );
+            chatType: chatType,
+            to: targetId,
+            body: CombineMessageBody(
+              title: title,
+              summary: summary,
+              compatibleText: compatibleText,
+              messageList: msgIds,
+            ));
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data.putIfNotNull("from", from);
     data.putIfNotNull("to", to);
     data.putIfNotNull("body", body.toJson());
     data.putIfNotNull("attributes", attributes);
-    data.putIfNotNull(
-      "direction",
-      this.direction == MessageDirection.SEND ? 'send' : 'rec',
-    );
+    data.putIfNotNull("direction", direction.index);
     data.putIfNotNull("hasRead", hasRead);
     data.putIfNotNull("hasReadAck", hasReadAck);
     data.putIfNotNull("hasDeliverAck", hasDeliverAck);
     data.putIfNotNull("needGroupAck", needGroupAck);
     data.putIfNotNull("msgId", msgId);
-    data.putIfNotNull("conversationId", this.conversationId ?? this.to);
-    data.putIfNotNull("chatType", chatTypeToInt(chatType));
+    data.putIfNotNull("convId", conversationId ?? to);
+    data.putIfNotNull("chatType", chatType.index);
     data.putIfNotNull("localTime", localTime);
     data.putIfNotNull("serverTime", serverTime);
-    data.putIfNotNull("status", messageStatusToInt(this.status));
+    data.putIfNotNull("status", status.index);
     data.putIfNotNull("isThread", isChatThreadMessage);
     data.putIfNotNull('isContentReplaced', isContentReplaced);
     if (_priority != null) {
@@ -950,22 +935,20 @@ class ChatMessage {
       ..from = map["from"]
       ..body = _bodyFromMap(map["body"])!
       ..attributes = map.getMapValue("attributes")
-      ..direction = map["direction"] == 'send'
-          ? MessageDirection.SEND
-          : MessageDirection.RECEIVE
+      ..direction = MessageDirection.values[map["direction"]]
       ..hasRead = map.boolValue('hasRead')
       ..hasReadAck = map.boolValue('hasReadAck')
       ..needGroupAck = map.boolValue('needGroupAck')
       ..hasDeliverAck = map.boolValue('hasDeliverAck')
       .._msgId = map["msgId"]
-      ..conversationId = map["conversationId"]
-      ..chatType = chatTypeFromInt(map["chatType"])
+      ..conversationId = map["convId"]
+      ..chatType = ChatType.values[map["chatType"]]
       ..localTime = map["localTime"] ?? 0
       ..serverTime = map["serverTime"] ?? 0
       ..isChatThreadMessage = map["isThread"] ?? false
       ..onlineState = map["onlineState"] ?? true
       ..deliverOnlineOnly = map['deliverOnlineOnly'] ?? false
-      ..status = messageStatusFromInt(map["status"])
+      ..status = MessageStatus.values[map["status"]]
       ..receiverList = map["receiverList"]?.cast<String>()
       ..isBroadcast = map["broadcast"] ?? false
       ..isContentReplaced = map["isContentReplaced"] ?? false;
@@ -973,35 +956,35 @@ class ChatMessage {
 
   static ChatMessageBody? _bodyFromMap(Map map) {
     ChatMessageBody? body;
-    switch (map['type']) {
-      case 'txt':
+    MessageType type = MessageType.values[map['type']];
+    switch (type) {
+      case MessageType.TXT:
         body = ChatTextMessageBody.fromJson(map: map);
         break;
-      case 'loc':
+      case MessageType.LOCATION:
         body = ChatLocationMessageBody.fromJson(map: map);
         break;
-      case 'cmd':
+      case MessageType.CMD:
         body = ChatCmdMessageBody.fromJson(map: map);
         break;
-      case 'custom':
+      case MessageType.CUSTOM:
         body = ChatCustomMessageBody.fromJson(map: map);
         break;
-      case 'file':
+      case MessageType.FILE:
         body = ChatFileMessageBody.fromJson(map: map);
         break;
-      case 'img':
+      case MessageType.IMAGE:
         body = ChatImageMessageBody.fromJson(map: map);
         break;
-      case 'video':
+      case MessageType.VIDEO:
         body = ChatVideoMessageBody.fromJson(map: map);
         break;
-      case 'voice':
+      case MessageType.VOICE:
         body = ChatVoiceMessageBody.fromJson(map: map);
         break;
-      case 'combine':
+      case MessageType.COMBINE:
         body = CombineMessageBody.fromJson(map: map);
         break;
-      default:
     }
 
     return body;
@@ -1011,11 +994,6 @@ class ChatMessage {
   String toString() {
     return toJson().toString();
   }
-
-  static const MethodChannel _emMessageChannel = const MethodChannel(
-    'com.chat.im/chat_message',
-    JSONMethodCodec(),
-  );
 
   /// ~english
   /// Gets the Reaction list.
@@ -1033,20 +1011,22 @@ class ChatMessage {
   /// **Throws** 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。请参见 [ChatError]。
   /// ~end
   Future<List<ChatMessageReaction>> reactionList() async {
-    Map req = {"msgId": msgId};
-    Map result = await _emMessageChannel.invokeMethod(
-      ChatMethodKeys.getReactionList,
-      req,
-    );
     try {
+      Map req = {"msgId": msgId};
+      Map result = await platform_interface.Client.instance.messageManager.callNativeMethod(
+        ChatMethodKeys.getReactionList,
+        req,
+      );
       ChatError.hasErrorFromResult(result);
       List<ChatMessageReaction> list = [];
       result[ChatMethodKeys.getReactionList]?.forEach(
-        (element) => list.add(ChatMessageReaction.fromJson(element)),
+        (element) => list.add(
+          ChatMessageReaction.fromJson(element),
+        ),
       );
       return list;
-    } on ChatError catch (e) {
-      throw e;
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -1066,20 +1046,18 @@ class ChatMessage {
   /// **Throws** 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。请参见 [ChatError]。
   /// ~end
   Future<int> groupAckCount() async {
-    Map req = {"msgId": msgId};
-    Map result = await _emMessageChannel.invokeMethod(
-      ChatMethodKeys.groupAckCount,
-      req,
-    );
     try {
+      Map req = {"msgId": msgId};
+      Map result = await platform_interface.Client.instance.messageManager
+          .callNativeMethod(ChatMethodKeys.groupAckCount, req);
       ChatError.hasErrorFromResult(result);
       if (result.containsKey(ChatMethodKeys.groupAckCount)) {
         return result[ChatMethodKeys.groupAckCount];
       } else {
         return 0;
       }
-    } on ChatError catch (e) {
-      throw e;
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -1102,23 +1080,19 @@ class ChatMessage {
   /// **Throws** 如果有方法调用的异常会在这里抛出，可以看到具体错误原因。请参见 [ChatError]。
   /// ~end
   Future<ChatThread?> chatThread() async {
-    Map req = {"msgId": msgId};
-    Map result = await _emMessageChannel.invokeMethod(
-      ChatMethodKeys.getChatThread,
-      req,
-    );
     try {
+      Map req = {"msgId": msgId};
+      Map result = await platform_interface.Client.instance.messageManager
+          .callNativeMethod(ChatMethodKeys.getChatThread, req);
       ChatError.hasErrorFromResult(result);
       if (result.containsKey(ChatMethodKeys.getChatThread)) {
-        return result.getValue<ChatThread>(
-          ChatMethodKeys.getChatThread,
-          callback: (obj) => ChatThread.fromJson(obj),
-        );
+        return result.getValue<ChatThread>(ChatMethodKeys.getChatThread,
+            callback: (obj) => ChatThread.fromJson(obj));
       } else {
         return null;
       }
-    } on ChatError catch (e) {
-      throw e;
+    } catch (e) {
+      rethrow;
     }
   }
 }
@@ -1126,15 +1100,18 @@ class ChatMessage {
 abstract class ChatMessageBody {
   ChatMessageBody({required this.type});
 
-  ChatMessageBody.fromJson({required Map map, required this.type}) {
+  ChatMessageBody.fromJson({
+    required Map map,
+    required this.type,
+  }) {
     _operatorTime = map["operatorTime"];
     _operatorId = map["operatorId"];
     _operatorCount = map["operatorCount"];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['type'] = messageTypeToTypeStr(this.type);
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['type'] = type.index;
     return data;
   }
 
@@ -1196,12 +1173,12 @@ class ChatCmdMessageBody extends ChatMessageBody {
   /// 创建一个命令消息。
   /// ~end
   ChatCmdMessageBody({required this.action, this.deliverOnlineOnly = false})
-    : super(type: MessageType.CMD);
+      : super(type: MessageType.CMD);
 
   ChatCmdMessageBody.fromJson({required Map map})
-    : super.fromJson(map: map, type: MessageType.CMD) {
-    this.action = map["action"];
-    this.deliverOnlineOnly = map["deliverOnlineOnly"] ?? false;
+      : super.fromJson(map: map, type: MessageType.CMD) {
+    action = map["action"];
+    deliverOnlineOnly = map["deliverOnlineOnly"] ?? false;
   }
 
   @override
@@ -1280,20 +1257,20 @@ class ChatLocationMessageBody extends ChatMessageBody {
   }
 
   ChatLocationMessageBody.fromJson({required Map map})
-    : super.fromJson(map: map, type: MessageType.LOCATION) {
-    this.latitude = (map["latitude"] ?? 0).toDouble();
-    this.longitude = (map["longitude"] ?? 0).toDouble();
-    this._address = map["address"];
-    this._buildingName = map["buildingName"];
+      : super.fromJson(map: map, type: MessageType.LOCATION) {
+    latitude = (map["latitude"] ?? 0).toDouble();
+    longitude = (map["longitude"] ?? 0).toDouble();
+    _address = map["address"];
+    _buildingName = map["buildingName"];
   }
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data['latitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-    data.putIfNotNull("address", this._address);
-    data.putIfNotNull("buildingName", this._buildingName);
+    data['latitude'] = latitude;
+    data['longitude'] = longitude;
+    data.putIfNotNull("address", _address);
+    data.putIfNotNull("buildingName", _buildingName);
     return data;
   }
 
@@ -1372,32 +1349,28 @@ class ChatFileMessageBody extends ChatMessageBody {
     required this.localPath,
     this.displayName,
     this.fileSize,
-    MessageType type = MessageType.FILE,
-  }) : super(type: type);
+    super.type = MessageType.FILE,
+  });
 
-  ChatFileMessageBody.fromJson({
-    required Map map,
-    MessageType type = MessageType.FILE,
-  }) : super.fromJson(map: map, type: type) {
-    this.secret = map["secret"];
-    this.remotePath = map["remotePath"];
-    this.fileSize = map["fileSize"];
-    this.localPath = map["localPath"] ?? "";
-    this.displayName = map["displayName"];
-    this.fileStatus = ChatFileMessageBody.downloadStatusFromInt(
-      map["fileStatus"],
-    );
+  ChatFileMessageBody.fromJson({required Map map, super.type = MessageType.FILE})
+      : super.fromJson(map: map) {
+    secret = map["secret"];
+    remotePath = map["remotePath"];
+    fileSize = map["fileSize"];
+    localPath = map["localPath"] ?? "";
+    displayName = map["displayName"];
+    fileStatus = DownloadStatus.values[map["fileStatus"]];
   }
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data.putIfNotNull("secret", this.secret);
-    data.putIfNotNull("remotePath", this.remotePath);
-    data.putIfNotNull("fileSize", this.fileSize);
-    data.putIfNotNull("localPath", this.localPath);
-    data.putIfNotNull("displayName", this.displayName);
-    data.putIfNotNull("fileStatus", downloadStatusToInt(this.fileStatus));
+    data.putIfNotNull("secret", secret);
+    data.putIfNotNull("remotePath", remotePath);
+    data.putIfNotNull("fileSize", fileSize);
+    data.putIfNotNull("localPath", localPath);
+    data.putIfNotNull("displayName", displayName);
+    data.putIfNotNull("fileStatus", fileStatus.index);
 
     return data;
   }
@@ -1455,18 +1428,6 @@ class ChatFileMessageBody extends ChatMessageBody {
   /// 附件的名称。
   /// ~end
   String? displayName;
-
-  static DownloadStatus downloadStatusFromInt(int? status) {
-    if (status == 0) {
-      return DownloadStatus.DOWNLOADING;
-    } else if (status == 1) {
-      return DownloadStatus.SUCCESS;
-    } else if (status == 2) {
-      return DownloadStatus.FAILED;
-    } else {
-      return DownloadStatus.PENDING;
-    }
-  }
 }
 
 /// ~english
@@ -1513,31 +1474,28 @@ class ChatImageMessageBody extends ChatFileMessageBody {
   /// Param [height] 图片高度，单位为像素。
   /// ~end
   ChatImageMessageBody({
-    required String localPath,
-    String? displayName,
+    required super.localPath,
+    super.displayName,
     this.thumbnailLocalPath,
     this.sendOriginalImage = false,
-    int? fileSize,
+    super.fileSize,
     this.width,
     this.height,
+    this.isGif = false,
   }) : super(
-         localPath: localPath,
-         displayName: displayName,
-         fileSize: fileSize,
-         type: MessageType.IMAGE,
-       );
+          type: MessageType.IMAGE,
+        );
 
   ChatImageMessageBody.fromJson({required Map map})
-    : super.fromJson(map: map, type: MessageType.IMAGE) {
-    this.thumbnailLocalPath = map["thumbnailLocalPath"];
-    this.thumbnailRemotePath = map["thumbnailRemotePath"];
-    this.thumbnailSecret = map["thumbnailSecret"];
-    this.sendOriginalImage = map["sendOriginalImage"] ?? false;
-    this.height = (map["height"] ?? 0).toDouble();
-    this.width = (map["width"] ?? 0).toDouble();
-    this.thumbnailStatus = ChatFileMessageBody.downloadStatusFromInt(
-      map["thumbnailStatus"],
-    );
+      : super.fromJson(map: map, type: MessageType.IMAGE) {
+    thumbnailLocalPath = map["thumbnailLocalPath"];
+    thumbnailRemotePath = map["thumbnailRemotePath"];
+    thumbnailSecret = map["thumbnailSecret"];
+    sendOriginalImage = map["sendOriginalImage"] ?? false;
+    height = (map["height"] ?? 0).toDouble();
+    width = (map["width"] ?? 0).toDouble();
+    thumbnailStatus = DownloadStatus.values[map["thumbnailStatus"]];
+    isGif = map["isGif"] ?? false;
   }
 
   @override
@@ -1546,20 +1504,18 @@ class ChatImageMessageBody extends ChatFileMessageBody {
     data.putIfNotNull("thumbnailLocalPath", thumbnailLocalPath);
     data.putIfNotNull("thumbnailRemotePath", thumbnailRemotePath);
     data.putIfNotNull("thumbnailSecret", thumbnailSecret);
-    data.putIfNotNull("sendOriginalImage", sendOriginalImage);
+    data.putIfNotNull("sendOriginalImage", isGif ? true : sendOriginalImage);
     data.putIfNotNull("height", height ?? 0.0);
     data.putIfNotNull("width", width ?? 0.0);
-    data.putIfNotNull(
-      "thumbnailStatus",
-      downloadStatusToInt(this.thumbnailStatus),
-    );
+    data.putIfNotNull("thumbnailStatus", thumbnailStatus.index);
+    data.putIfNotNull('isGif', isGif);
     return data;
   }
 
   /// ~english
   /// Whether to send the original image.
   ///
-  /// - `false`: (default) No. The original image will be compressed if it exceeds 100 KB and the thumbnail will be sent.
+  /// - (default) `false`: No. The original image will be compressed if it exceeds 100 KB and the thumbnail will be sent.
   /// - `true`: Yes.
   /// ~end
   ///
@@ -1623,6 +1579,12 @@ class ChatImageMessageBody extends ChatFileMessageBody {
   /// 图片高度，单位为像素。
   /// ~end
   double? height;
+
+  /// ~english
+  /// ~end
+  /// ~chinese
+  /// ~end
+  bool isGif = false;
 }
 
 /// ~english
@@ -1644,25 +1606,28 @@ class ChatTextMessageBody extends ChatMessageBody {
   ///
   /// Param [content] 文本消息内容。
   /// ~end
-  ChatTextMessageBody({required this.content, this.targetLanguages})
-    : super(type: MessageType.TXT);
+  ChatTextMessageBody({
+    required this.content,
+    this.targetLanguages,
+  }) : super(type: MessageType.TXT);
 
   ChatTextMessageBody.fromJson({required Map map})
-    : super.fromJson(map: map, type: MessageType.TXT) {
-    this.content = map["content"] ?? "";
-    this.targetLanguages = map.getList("targetLanguages");
+      : super.fromJson(map: map, type: MessageType.TXT) {
+    content = map["content"] ?? "";
+    targetLanguages = map.getList("targetLanguages");
     if (map.containsKey("translations")) {
-      this.translations = map["translations"]?.cast<String, String>();
+      translations = map["translations"]?.cast<String, String>();
     }
   }
 
   @override
+
   ///@nodoc
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data['content'] = this.content;
-    data.putIfNotNull("targetLanguages", this.targetLanguages);
-    data.putIfNotNull("translations", this.translations);
+    data['content'] = content;
+    data.putIfNotNull("targetLanguages", targetLanguages);
+    data.putIfNotNull("translations", translations);
     return data;
   }
 
@@ -1676,7 +1641,7 @@ class ChatTextMessageBody extends ChatMessageBody {
   late final String content;
 
   /// ~english
-  /// The target languages to translate
+  /// The target languages for translation.
   /// ~end
   ///
   /// ~chinese
@@ -1685,7 +1650,7 @@ class ChatTextMessageBody extends ChatMessageBody {
   List<String>? targetLanguages;
 
   /// ~english
-  /// It is Map, key is target language, value is translated content
+  /// It is Map, where the key is target language and the value is translated content.
   /// ~end
   ///
   /// ~chinese
@@ -1694,7 +1659,7 @@ class ChatTextMessageBody extends ChatMessageBody {
   Map<String, String>? translations;
 
   /// ~english
-  /// Get the user ID of the operator that modified the message last time.
+  /// Gets the user ID of the operator that modified the message last time.
   /// ~end
   ///
   /// ~chinese
@@ -1703,7 +1668,7 @@ class ChatTextMessageBody extends ChatMessageBody {
   String? get lastModifyOperatorId => _operatorId;
 
   /// ~english
-  /// Get the UNIX timestamp of the last message modification, in milliseconds.
+  /// Gets the UNIX timestamp of the last message modification, in milliseconds.
   /// ~end
   ///
   /// ~chinese
@@ -1712,7 +1677,7 @@ class ChatTextMessageBody extends ChatMessageBody {
   int? get lastModifyTime => _operatorTime;
 
   /// ~english
-  /// Get the number of times a message is modified.
+  /// Gets the number of times a message is modified.
   /// ~end
   ///
   /// ~chinese
@@ -1765,31 +1730,26 @@ class ChatVideoMessageBody extends ChatFileMessageBody {
   /// Param [width] 视频宽度，单位是像素。
   /// ~end
   ChatVideoMessageBody({
-    required String localPath,
-    String? displayName,
+    required super.localPath,
+    super.displayName,
     this.duration = 0,
-    int? fileSize,
+    super.fileSize,
     this.thumbnailLocalPath,
     this.height,
     this.width,
   }) : super(
-         localPath: localPath,
-         displayName: displayName,
-         fileSize: fileSize,
-         type: MessageType.VIDEO,
-       );
+          type: MessageType.VIDEO,
+        );
 
   ChatVideoMessageBody.fromJson({required Map map})
-    : super.fromJson(map: map, type: MessageType.VIDEO) {
-    this.duration = map["duration"];
-    this.thumbnailLocalPath = map["thumbnailLocalPath"];
-    this.thumbnailRemotePath = map["thumbnailRemotePath"];
-    this.thumbnailSecret = map["thumbnailSecret"];
-    this.height = (map["height"] ?? 0).toDouble();
-    this.width = (map["width"] ?? 0).toDouble();
-    this.thumbnailStatus = ChatFileMessageBody.downloadStatusFromInt(
-      map["thumbnailStatus"],
-    );
+      : super.fromJson(map: map, type: MessageType.VIDEO) {
+    duration = map["duration"];
+    thumbnailLocalPath = map["thumbnailLocalPath"];
+    thumbnailRemotePath = map["thumbnailRemotePath"];
+    thumbnailSecret = map["thumbnailSecret"];
+    height = (map["height"] ?? 0).toDouble();
+    width = (map["width"] ?? 0).toDouble();
+    thumbnailStatus = DownloadStatus.values[map["thumbnailStatus"]];
   }
 
   @override
@@ -1801,10 +1761,7 @@ class ChatVideoMessageBody extends ChatFileMessageBody {
     data.putIfNotNull("thumbnailSecret", thumbnailSecret);
     data.putIfNotNull("height", height ?? 0.0);
     data.putIfNotNull("width", width ?? 0.0);
-    data.putIfNotNull(
-      "thumbnailStatus",
-      downloadStatusToInt(this.thumbnailStatus),
-    );
+    data.putIfNotNull("thumbnailStatus", thumbnailStatus.index);
 
     return data;
   }
@@ -1905,20 +1862,17 @@ class ChatVoiceMessageBody extends ChatFileMessageBody {
   /// Param [fileSize] 语音文件大小，单位是字节。
   /// ~end
   ChatVoiceMessageBody({
-    localPath,
+    required super.localPath,
     this.duration = 0,
-    String? displayName,
-    int? fileSize,
+    super.displayName,
+    super.fileSize,
   }) : super(
-         localPath: localPath,
-         displayName: displayName,
-         fileSize: fileSize,
-         type: MessageType.VOICE,
-       );
+          type: MessageType.VOICE,
+        );
 
   ChatVoiceMessageBody.fromJson({required Map map})
-    : super.fromJson(map: map, type: MessageType.VOICE) {
-    this.duration = map["duration"] ?? 0;
+      : super.fromJson(map: map, type: MessageType.VOICE) {
+    duration = map["duration"] ?? 0;
   }
 
   @override
@@ -1953,12 +1907,14 @@ class ChatCustomMessageBody extends ChatMessageBody {
   /// ~chinese
   /// 自定义消息体类。
   /// ~end
-  ChatCustomMessageBody({required this.event, this.params})
-    : super(type: MessageType.CUSTOM);
+  ChatCustomMessageBody({
+    required this.event,
+    this.params,
+  }) : super(type: MessageType.CUSTOM);
   ChatCustomMessageBody.fromJson({required Map map})
-    : super.fromJson(map: map, type: MessageType.CUSTOM) {
-    this.event = map["event"];
-    this.params = map["params"]?.cast<String, String>();
+      : super.fromJson(map: map, type: MessageType.CUSTOM) {
+    event = map["event"];
+    params = map["params"]?.cast<String, String>();
   }
 
   @override
@@ -1996,9 +1952,9 @@ class CombineMessageBody extends ChatMessageBody {
     this.fileStatus = DownloadStatus.PENDING,
     List<String>? messageList,
     String? compatibleText,
-  }) : _compatibleText = compatibleText,
-       _messageList = messageList,
-       super(type: MessageType.COMBINE);
+  })  : _compatibleText = compatibleText,
+        _messageList = messageList,
+        super(type: MessageType.COMBINE);
 
   final String? title;
   final String? summary;
@@ -2020,7 +1976,7 @@ class CombineMessageBody extends ChatMessageBody {
     data.putIfNotNull("localPath", _localPath);
     data.putIfNotNull("remotePath", _remotePath);
     data.putIfNotNull("secret", _secret);
-    data.putIfNotNull("fileStatus", downloadStatusToInt(this.fileStatus));
+    data.putIfNotNull("fileStatus", fileStatus.index);
     return data;
   }
 
@@ -2028,7 +1984,7 @@ class CombineMessageBody extends ChatMessageBody {
     var body = CombineMessageBody(
       title: map["title"],
       summary: map["summary"],
-      fileStatus: ChatFileMessageBody.downloadStatusFromInt(map["fileStatus"]),
+      fileStatus: DownloadStatus.values[map["fileStatus"]],
     );
     body._localPath = map["localPath"];
     body._remotePath = map["remotePath"];

@@ -6,10 +6,10 @@
 
 #import "GeneratedPluginRegistrant.h"
 
-#if __has_include(<agora_chat_sdk/ImFlutterSdkPlugin.h>)
-#import <agora_chat_sdk/ImFlutterSdkPlugin.h>
+#if __has_include(<agora_chat_sdk_ios/ImFlutterSdkPlugin.h>)
+#import <agora_chat_sdk_ios/ImFlutterSdkPlugin.h>
 #else
-@import agora_chat_sdk;
+@import agora_chat_sdk_ios;
 #endif
 
 @implementation GeneratedPluginRegistrant

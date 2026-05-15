@@ -1,4 +1,4 @@
-import 'inner_headers.dart';
+import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
 
 /// ~english
 /// The push configuration class, which contains the push configuration information, such as the push style.
@@ -52,7 +52,7 @@ class ChatPushConfig {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data.putIfNotNull("mzAppId", mzAppId);
     data.putIfNotNull("mzAppKey", mzAppKey);
     data.putIfNotNull("oppoAppKey", oppoAppKey);

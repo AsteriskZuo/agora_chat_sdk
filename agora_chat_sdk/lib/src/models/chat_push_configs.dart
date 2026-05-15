@@ -1,4 +1,4 @@
-import '../internal/inner_headers.dart';
+import 'package:agora_chat_sdk/agora_chat_sdk.dart';
 
 /// ~english
 /// The push configuration class.
@@ -8,7 +8,7 @@ import '../internal/inner_headers.dart';
 /// 推送设置类。
 /// ~end
 class ChatPushConfigs {
-  ChatPushConfigs._private({
+  ChatPushConfigs({
     this.displayStyle = DisplayStyle.Simple,
     this.displayName,
   });
@@ -32,10 +32,9 @@ class ChatPushConfigs {
   final String? displayName;
 
   factory ChatPushConfigs.fromJson(Map map) {
-    return ChatPushConfigs._private(
-      displayStyle: map['pushStyle'] == 0
-          ? DisplayStyle.Simple
-          : DisplayStyle.Summary,
+    return ChatPushConfigs(
+      displayStyle:
+          map['pushStyle'] == 0 ? DisplayStyle.Simple : DisplayStyle.Summary,
       displayName: map["displayName"],
     );
   }

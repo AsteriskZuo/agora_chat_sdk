@@ -1,15 +1,15 @@
-import 'package:agora_chat_sdk/src/internal/inner_headers.dart';
+import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
 
 class ChatContact {
   final String userId;
   final String remark;
 
-  ChatContact._private(Map map)
-    : userId = map["userId"],
-      remark = map["remark"];
+  ChatContact(Map map)
+      : userId = map["userId"],
+        remark = map["remark"];
 
   Map toJson() {
-    Map data = Map();
+    Map data = {};
     data.putIfNotNull("userId", userId);
     data.putIfNotNull("remark", remark);
 
@@ -17,6 +17,6 @@ class ChatContact {
   }
 
   factory ChatContact.fromJson(Map map) {
-    return ChatContact._private(map);
+    return ChatContact(map);
   }
 }

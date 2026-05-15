@@ -1,4 +1,5 @@
-import '../internal/inner_headers.dart';
+import 'package:agora_chat_sdk/agora_chat_sdk.dart';
+import 'package:agora_chat_sdk/src/tools/chat_extension.dart';
 
 /// ~english
 /// Offline push Settings parameter entity class.
@@ -57,11 +58,12 @@ class ChatSilentModeParam {
   ///
   /// Param [remindType] 离线推送通知类型。
   /// ~end
-  ChatSilentModeParam.remindType(this.remindType)
-    : this.silentDuration = null,
-      this.startTime = null,
-      this.endTime = null,
-      this._paramType = ChatSilentModeParamType.REMIND_TYPE;
+  ChatSilentModeParam.remindType(
+    this.remindType,
+  )   : silentDuration = null,
+        startTime = null,
+        endTime = null,
+        _paramType = ChatSilentModeParamType.REMIND_TYPE;
 
   /// ~english
   /// Set the offline push DND duration.
@@ -74,10 +76,10 @@ class ChatSilentModeParam {
   /// Param [silentDuration] 离线推送免打扰时长，单位为分钟。
   /// ~end
   ChatSilentModeParam.silentDuration(this.silentDuration)
-    : this.startTime = null,
-      this.endTime = null,
-      this.remindType = null,
-      this._paramType = ChatSilentModeParamType.SILENT_MODE_DURATION;
+      : startTime = null,
+        endTime = null,
+        remindType = null,
+        _paramType = ChatSilentModeParamType.SILENT_MODE_DURATION;
 
   /// ~english
   /// Set the start time of offline push DND, you need to create the start time and end time together.
@@ -97,14 +99,14 @@ class ChatSilentModeParam {
   ChatSilentModeParam.silentModeInterval({
     required this.startTime,
     required this.endTime,
-  }) : this.silentDuration = null,
-       this.remindType = null,
-       this._paramType = ChatSilentModeParamType.SILENT_MODE_INTERVAL;
+  })  : silentDuration = null,
+        remindType = null,
+        _paramType = ChatSilentModeParamType.SILENT_MODE_INTERVAL;
 
   Map toJson() {
-    Map data = Map();
-    data.putIfNotNull("paramType", chatSilentModeParamTypeToInt(_paramType));
-    data.putIfNotNull("remindType", chatPushRemindTypeToInt(remindType));
+    Map data = {};
+    data.putIfNotNull("paramType", _paramType.index);
+    data.putIfNotNull("remindType", remindType?.index);
     data.putIfNotNull("startTime", startTime?.toJson());
     data.putIfNotNull("endTime", endTime?.toJson());
     data.putIfNotNull("duration", silentDuration);
@@ -153,17 +155,23 @@ class ChatSilentModeTime {
   ///
   /// Param [minute] 设置分钟数。
   /// ~end
-  ChatSilentModeTime({this.minute = 0, this.hour = 0});
+  ChatSilentModeTime({
+    this.minute = 0,
+    this.hour = 0,
+  });
 
   Map toJson() {
-    Map data = Map();
+    Map data = {};
     data["minute"] = minute;
     data["hour"] = hour;
     return data;
   }
 
   factory ChatSilentModeTime.fromJson(Map map) {
-    return ChatSilentModeTime(hour: map["hour"], minute: map["minute"]);
+    return ChatSilentModeTime(
+      hour: map["hour"],
+      minute: map["minute"],
+    );
   }
 }
 
@@ -247,17 +255,14 @@ class ChatSilentModeResult {
 
   factory ChatSilentModeResult.fromJson(Map map) {
     int expireTimestamp = map["expireTs"];
-    ChatSilentModeTime startTime = ChatSilentModeTime.fromJson(
-      map["startTime"],
-    );
+    ChatSilentModeTime startTime =
+        ChatSilentModeTime.fromJson(map["startTime"]);
     ChatSilentModeTime endTime = ChatSilentModeTime.fromJson(map["endTime"]);
-    ChatPushRemindType remindType = chatPushRemindTypeFromInt(
-      map["remindType"],
-    );
-    String conversationId = map["conversationId"];
-    ChatConversationType conversationType = conversationTypeFromInt(
-      map["conversationType"],
-    );
+    ChatPushRemindType remindType =
+        ChatPushRemindType.values[map["remindType"]];
+    String conversationId = map["convId"];
+    ChatConversationType conversationType =
+        ChatConversationType.values[map["conversationType"]];
     return ChatSilentModeResult(
       expireTimestamp,
       conversationType,

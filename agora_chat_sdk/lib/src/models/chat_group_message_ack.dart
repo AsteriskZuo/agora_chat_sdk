@@ -1,5 +1,3 @@
-import '../internal/inner_headers.dart';
-
 /// ~english
 /// The class for group message read receipts.
 ///
@@ -91,9 +89,9 @@ class ChatGroupMessageAck {
   final int timestamp;
 
   factory ChatGroupMessageAck.fromJson(Map map) {
-    ChatGroupMessageAck ack = ChatGroupMessageAck._private(
+    ChatGroupMessageAck ack = ChatGroupMessageAck(
       ackId: map["ack_id"],
-      messageId: map["msg_id"] as String,
+      messageId: map["msgId"] as String,
       from: map["from"] as String,
       content: map["content"],
       readCount: map["count"] ?? 0,
@@ -103,7 +101,7 @@ class ChatGroupMessageAck {
     return ack;
   }
 
-  ChatGroupMessageAck._private({
+  ChatGroupMessageAck({
     this.ackId,
     required this.messageId,
     required this.from,

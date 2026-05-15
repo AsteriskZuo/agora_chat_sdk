@@ -33,7 +33,7 @@ class ChatTranslateLanguage {
   /// ~end
   final String languageNativeName;
 
-  ChatTranslateLanguage._private({
+  ChatTranslateLanguage({
     required this.languageCode,
     required this.languageName,
     required this.languageNativeName,
@@ -43,7 +43,7 @@ class ChatTranslateLanguage {
     String code = map["code"];
     String name = map["name"];
     String nativeName = map["nativeName"];
-    return ChatTranslateLanguage._private(
+    return ChatTranslateLanguage(
       languageCode: code,
       languageName: name,
       languageNativeName: nativeName,
