@@ -26,7 +26,7 @@ If your target platform is iOS, your development environment must meet the follo
 - macOS
 - Xcode 12.4 or later with Xcode Command Line Tools
 - CocoaPods
-- An iOS simulator or a real iOS device running iOS 11.0 or later
+- An iOS simulator or a real iOS device running iOS 12.0 or later
 
 If your target platform is Android, your development environment must meet the following requirements:
 - Flutter 3.3.0 or later
@@ -93,12 +93,24 @@ flutter create quick_start
 
 #### Android setup
 
-1. In the `quick_start/android/app/build.gradle` file, add the following lines at the end to set the minimum Android SDK version to 21:
+1. Set the minimum Android SDK version to 21.
+
+For projects that use Groovy, update the `quick_start/android/app/build.gradle` file as follows:
 
 ```gradle
 android {
     defaultConfig {
         minSdkVersion 21
+    }
+}
+```
+
+For projects that use Kotlin DSL, update the `quick_start/android/app/build.gradle.kts` file as follows:
+
+```kotlin
+android {
+    defaultConfig {
+        minSdk = 21
     }
 }
 ```
@@ -112,7 +124,7 @@ android {
 
 #### iOS setup
 
-1. Open the `quick_start/ios/Runner.xcodeproj` file in **Xcode**, and select **TARGETS** > **Runner** in the left sidebar. In the **Deployment Info** section under the **General** tab, set the minimum iOS version to **iOS 10.0**.
+1. Open the `quick_start/ios/Runner.xcodeproj` file in **Xcode**, and select **TARGETS** > **Runner** in the left sidebar. In the **Deployment Info** section under the **General** tab, set the minimum iOS version to **iOS 12.0**.
 
 ### 3. Integrate the Agora Chat SDK
 
@@ -264,13 +276,22 @@ In the `_initSDK` method, add the following to initialize the SDK:
 
 ```dart
   void _initSDK() async {
-    ChatOptions options = ChatOptions(
-      appKey: AgoraChatConfig.appKey,
+    ChatOptions options = ChatOptions.withAppKey(
+      AgoraChatConfig.appKey,
       autoLogin: false,
     );
     await ChatClient.getInstance.init(options);
     await ChatClient.getInstance.startCallback();
   }
+```
+
+If you use an App ID instead of an App Key, initialize the SDK with `ChatOptions.withAppId`:
+
+```dart
+    ChatOptions options = ChatOptions.withAppId(
+      "<#Your app id#>",
+      autoLogin: false,
+    );
 ```
 
 ### 2. Log in to an account
@@ -327,7 +348,7 @@ In the `_sendMessage` method, add the following to add the creating and sending 
   }
 ```
 
-### 7. Receive messages
+### 5. Receive messages
 
 1. Add the following handle event in your class:
 
@@ -374,7 +395,7 @@ In the `_sendMessage` method, add the following to add the creating and sending 
         case MessageType.FILE:
           {
             _addLogToConsole(
-              "receive image message, from: ${msg.from}",
+              "receive file message, from: ${msg.from}",
             );
           }
           break;
@@ -406,7 +427,7 @@ In the `_sendMessage` method, add the following to add the creating and sending 
             _addLogToConsole("send message succeed");
           },
           onProgress: (msgId, progress) {
-            _addLogToConsole("send message succeed");
+            _addLogToConsole("send message progress: $progress");
           },
           onError: (msgId, msg, error) {
             _addLogToConsole(
@@ -442,7 +463,7 @@ Select the device to run the project, and run the following command in the `quic
 flutter run
 ```
 
-Take an Android device as an example, if the sample project runs properly, the following user interface appears:
+Take an Android device as an example. If the sample project runs properly, the app starts and shows the quick start user interface.
 
 In the user interface, perform the following operations to test the project:
 
@@ -456,11 +477,7 @@ Fill in the userId of the receiver in the `Enter recipient's user Id` box, type 
 Click **SIGN OUT** to log out of the app.
 
 4. Receive the message
-After signing out, change `AgoraChatConfig` userId, agoraToken, and receive the message "hello" sent in step 3.
-
-You can check the log to see all the operations from this example, as shown in the following figure:
-
-![](./images/sendMsg2.png)
+After signing out, change `AgoraChatConfig` userId and agoraToken, and receive the message "hello" sent in step 2.
 
 
 ## Next steps
