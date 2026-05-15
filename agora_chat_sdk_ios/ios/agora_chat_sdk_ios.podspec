@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'agora_chat_sdk_ios'
-  s.version          = '4.15.2'
+  s.version          = '1.4.0'
   s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC
 A new flutter plugin project.
